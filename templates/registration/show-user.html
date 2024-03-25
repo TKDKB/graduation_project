@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+    Profile
+{% endblock %}
+
+{% block links %}
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/input_form.css' %}">
+{% endblock %}
+
+{% block content %}
+        <div class="container">
+{#            <div class="d-grid gap-2 d-md-flex justify-content-md-end">#}
+{#                <div>#}
+{#                    <a href="{% url 'home'%}">#}
+{#                        <button type="button" class="btn btn-outline-dark">main page</button>#}
+{#                    </a>#}
+{#                </div>#}
+{#            </div>#}
+            <div class="text-center">
+                <h2 class="display-5 link-body-emphasis mb-1">{{ user.username | upper }}</h2>
+            </div>
+{#            <p class="text-center">#}
+{#                {% for tag in user_tag_list %}#}
+{#                    {% if tag %}#}
+{#                        <span class="badge text-bg-dark me-2">{{ tag }}</span>#}
+{#                    {% endif %}#}
+{#                {% endfor %}#}
+{#            </p>#}
+{#            <div>#}
+{#                <a href="{% url 'author-notes' user.username %}">#}
+{#                    <button type="button" class="btn btn-outline-dark">go to notes</button>#}
+{#                </a>#}
+{#            </div>#}
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Username: {{ user.username }}</li>
+                <li class="list-group-item">First Name: {{ user.first_name }}</li>
+                <li class="list-group-item">Last Name: {{ user.last_name }}</li>
+            </ul>
+{#            {% if user == request.user %}#}
+{#                <div>#}
+{#                    <a href="{% url 'edit-profile' user.username%}">#}
+{#                        <button type="button" class="btn btn-outline-dark">edit-profile</button>#}
+{#                    </a>#}
+{#                </div>#}
+{#            {% endif %}#}
+        </div>
+{% endblock %}

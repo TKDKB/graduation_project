@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+    Register
+{% endblock %}
+
+{% block links %}
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/input_form.css' %}">
+{% endblock %}
+
+{% block content %}
+	<div class="container" style="width: 400px">
+        <form action="{% url 'register' %}" method="post">
+            {% csrf_token %}
+            {% for field in form %}
+                <div>
+                    {% if field.errors %}
+                        <div class="alert alert-danger">{{ field.errors }}</div>
+                    {% endif %}
+                    {{ field.label_tag }}
+                    <div class="text-muted">{{ field.help_text }}</div>
+                        {{ field }}
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-outline-success" style="margin: 0 auto; display: block;">Зарегистрироваться</button>
+        </form>
+    </div>
+
+{% endblock %}

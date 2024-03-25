@@ -57,6 +57,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'graduation_project.urls'
 
+
+# DEFAULT REDIRECT URLS
+LOGIN_REDIRECT_URL = "profile"
+LOGOUT_REDIRECT_URL = "register"
+
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -128,6 +134,16 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
+
+# EMAIL
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = 'bulanovichvyacheslav@gmail.com'
+DEFAULT_FROM_EMAIL = 'bulanovichvyacheslav@gmail.com'
+EMAIL_HOST_PASSWORD = 'pmoj neps lspa kxxd'
 
 
 # Static files (CSS, JavaScript, Images)

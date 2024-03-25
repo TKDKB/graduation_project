@@ -23,14 +23,10 @@ class BalanceChange(models.Model):
     type = models.CharField(max_length=1, choices=Type.choices, verbose_name="Тип изменения баланса")
     necessity = models.BooleanField(null=True, blank=True, verbose_name="Необходимость траты")
     regularity = models.BooleanField(verbose_name="Регулярность")
-    category_id = models.ForeignKey(Category, on_delete=models.SET_NULL)
+    category_id = models.ForeignKey(Category, null=True, on_delete=models.SET_NULL)
     user_id = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
     description = models.TextField(null=True, blank=True, verbose_name="Описание")
-
-
-class GroupAccounts(models.Model):
-    name = models.CharField(max_length=255, verbose_name="Название")
 
 
 class Reports(models.Model):

@@ -29,8 +29,7 @@ def register_view(request: WSGIRequest):
                 safe_balance=form.cleaned_data['safe_balance'],
                 is_active=False,
             )
-            RegistrationConfirmEmailSender(request, user).send_mail()
-            # return HttpResponseRedirect(reverse("login"))
+            RegistrationConfirmEmailSender(request, user).send_mail()  # отправка письма для подтверждения
             return render(request, "registration/message.html")
 
     return render(request, 'registration/register.html', {'form': form})
@@ -61,7 +60,7 @@ def edit_user(request: WSGIRequest):
 
         return render(request, "user_profile.html", context)
 
-    elif request.method == "POST" and "confirm" in request.POST:
+    elif request.method == "POST":
 
         form = UserProfileForm(request.POST)
         if form.is_valid():
@@ -88,15 +87,7 @@ def send_email_password_change(request: WSGIRequest):
     return render(request, "registration/message.html")
 
 
-""" Отправить письмо для подтверждения регистрации """
-
-
-def send_email_registration_confirm(request: WSGIRequest):
-    RegistrationConfirmEmailSender(request, request.user).send_mail()
-
-    return render(request, "registration/message.html")
-
-
+""" Обработчик перехода по ссылке из письма для смены пароля """
 def change_password_receiver(request: WSGIRequest, token: str, uidb: str):
     user_id = force_str(urlsafe_base64_decode(uidb))
     user = get_object_or_404(User, id=user_id)
@@ -114,6 +105,7 @@ def change_password_receiver(request: WSGIRequest, token: str, uidb: str):
     return render(request, "registration/invalid-password-reset.html")
 
 
+""" Обработчик перехода по ссылке из письма для подтверждения регистрации """
 def confirm_registration_receiver(request: WSGIRequest, token: str, uidb: str):
     user_id = force_str(urlsafe_base64_decode(uidb))
     user = get_object_or_404(User, id=user_id)

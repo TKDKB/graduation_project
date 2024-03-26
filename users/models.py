@@ -9,5 +9,5 @@ class GroupAccounts(models.Model):
 
 class User(AbstractUser):
     group_account_id = models.ForeignKey(GroupAccounts, on_delete=models.CASCADE, null=True, default=None)
-    active_balance = models.FloatField(verbose_name="Активный баланс")
-    safe_balance = models.FloatField(verbose_name="Сбережения")
+    active_balance = models.IntegerField(verbose_name="Активный баланс")
+    safe_balance = models.IntegerField(verbose_name="Сбережения")

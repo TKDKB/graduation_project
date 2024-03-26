@@ -14,7 +14,7 @@ class Category(models.Model):
 
 
 class BalanceChange(models.Model):
-    sum = models.FloatField(verbose_name="Сумма")
+    sum = models.IntegerField(verbose_name="Сумма")
 
     class Type(models.TextChoices):
         breakfast = ('I', 'Income')

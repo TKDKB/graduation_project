@@ -42,6 +42,25 @@ class BalanceChange(models.Model):
     type = models.CharField(max_length=1, choices=Type.choices, verbose_name="Тип изменения баланса")
 
 
+class RegularBalanceChange(models.Model):
+    class Meta:
+        db_table = 'regular_balance_changes'
+
+    sum = models.IntegerField(verbose_name="Сумма")
+    category_id = models.ForeignKey(Category, null=True, on_delete=models.SET_NULL)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    creation_date = models.DateTimeField(auto_now_add=True)
+    description = models.TextField(null=True, blank=True, verbose_name="Описание")
+    regularity = models.DateTimeField(verbose_name="Регулярность")
+
+    class Type(models.TextChoices):
+        income = ('I', 'Income')
+        expence = ('E', 'Expence')
+
+    type = models.CharField(max_length=1, choices=Type.choices, verbose_name="Тип изменения баланса")
+
+
+
 class Reports(models.Model):
     class Meta:
         db_table = 'reports'

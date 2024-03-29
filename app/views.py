@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.db.models import QuerySet
 from django.contrib.auth.decorators import login_required
 from .models import BalanceChange, Category
-from .forms import IncomeForm, ExpenceForm, CategoryForm
+from .forms import IncomeForm, ExpenceForm, CategoryForm, RegularIncomeForm
 
 
 @login_required
@@ -67,3 +67,18 @@ def create_category(request: WSGIRequest):
 
     return render(request, 'create_category_form.html', {'form': form})
 
+@login_required
+def create_regular_income(request: WSGIRequest):
+    if request.method == 'POST':
+        form = RegularIncomeForm(request.POST)
+        if form.is_valid():
+            r_income = form.save(commit=False)
+            r_income.type = "E"
+            r_income.user = request.user  # Назначение пользователя из запроса
+            r_income.save()
+            # Дополнительные действия после успешного создания объекта
+            return render(request, 'temporary_message.html')  # Перенаправление на страницу об успешном создании объекта
+    else:
+        form = RegularIncomeForm()
+
+    return render(request, 'create_income_form.html', {'form': form})

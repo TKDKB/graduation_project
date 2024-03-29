@@ -1,7 +1,7 @@
 from django import forms
-from .models import BalanceChange, Category
+from .models import BalanceChange, Category, RegularBalanceChange
 
-
+# TODO: Сделать нормальное поле для выбора периодичности в регулярном доходе
 class IncomeForm(forms.ModelForm):
     class Meta:
         model = BalanceChange
@@ -49,4 +49,20 @@ class CategoryForm(forms.ModelForm):
             'name': 'Название',
             'is_private': 'Приватность',
             'type': 'Тип изменения баланса',
+        }
+
+
+class RegularIncomeForm(forms.ModelForm):
+    class Meta:
+        model = RegularBalanceChange
+        fields = ['sum', 'category_id', 'description', 'regularity']
+        labels = {
+            'sum': 'Сумма',
+            'category_id': 'Категория',
+            'description': 'Описание',
+            'regularity': 'Регулярность',
+        }
+
+        widgets = {
+            'category_id': forms.Select(attrs={'class': 'form-control'}),
         }

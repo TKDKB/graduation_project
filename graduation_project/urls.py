@@ -16,8 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from app.views import home_page_view, create_income, create_expence, create_category
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include("users.urls"))
+    path('accounts/', include("users.urls")),
+    path('home/', home_page_view, name="home-page"),
+    path('create-income/', create_income, name="create-income"),
+    path('create-expence/', create_expence, name="create-expence"),
+    path('create-category/', create_category, name="create-category"),
+
 ]

@@ -10,26 +10,42 @@ from django.db import models
 
 
 class Category(models.Model):
+    class Meta:
+        db_table = 'categories'
+
     name = models.CharField(max_length=255, verbose_name="Название")
+    is_private = models.BooleanField(verbose_name="Приватность")
+
+    class Type(models.TextChoices):
+        income = ('I', 'Income')
+        expence = ('E', 'Expence')
+
+    type = models.CharField(max_length=1, choices=Type.choices, verbose_name="Тип изменения баланса")
+    user = models.ManyToManyField(get_user_model(), related_name='users')
 
 
 class BalanceChange(models.Model):
+    class Meta:
+        db_table = 'balance_changes'
+
     sum = models.IntegerField(verbose_name="Сумма")
-
-    class Type(models.TextChoices):
-        breakfast = ('I', 'Income')
-        lunch = ('E', 'Expence')
-
-    type = models.CharField(max_length=1, choices=Type.choices, verbose_name="Тип изменения баланса")
     necessity = models.BooleanField(null=True, blank=True, verbose_name="Необходимость траты")
-    regularity = models.BooleanField(verbose_name="Регулярность")
     category_id = models.ForeignKey(Category, null=True, on_delete=models.SET_NULL)
-    user_id = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
     description = models.TextField(null=True, blank=True, verbose_name="Описание")
 
+    class Type(models.TextChoices):
+        income = ('I', 'Income')
+        expence = ('E', 'Expence')
+
+    type = models.CharField(max_length=1, choices=Type.choices, verbose_name="Тип изменения баланса")
+
 
 class Reports(models.Model):
+    class Meta:
+        db_table = 'reports'
+
     user_id = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     context = models.TextField(verbose_name="Содержание")
     time_period_start = models.DateTimeField(verbose_name="Начало промежутка времени")

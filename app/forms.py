@@ -5,7 +5,7 @@ from .models import BalanceChange, Category, RegularBalanceChange
 class IncomeForm(forms.ModelForm):
     class Meta:
         model = BalanceChange
-        fields = ['sum', 'category_id', 'description']
+        fields = ['sum', 'category', 'description']
         labels = {
             'sum': 'Сумма',
             'category_id': 'Категория',
@@ -13,32 +13,32 @@ class IncomeForm(forms.ModelForm):
         }
 
         widgets = {
-            'category_id': forms.Select(attrs={'class': 'form-control'}),
+            'category': forms.Select(attrs={'class': 'form-control'}),
         }
 
     def __init__(self, *args, **kwargs):
         super(IncomeForm, self).__init__(*args, **kwargs)
-        self.fields['category_id'].required = False  # Поле категории не обязательно
+        self.fields['category'].required = False  # Поле категории не обязательно
 
 
 class ExpenceForm(forms.ModelForm):
     class Meta:
         model = BalanceChange
-        fields = ['sum', 'necessity', 'category_id', 'description']
+        fields = ['sum', 'necessity', 'category', 'description']
         labels = {
             'sum': 'Сумма',
             'necessity': 'Необходимость траты',
-            'category_id': 'Категория',
+            'category': 'Категория',
             'description': 'Описание',
         }
 
         widgets = {
-            'category_id': forms.Select(attrs={'class': 'form-control'}),
+            'category': forms.Select(attrs={'class': 'form-control'}),
         }
 
     def __init__(self, *args, **kwargs):
         super(ExpenceForm, self).__init__(*args, **kwargs)
-        self.fields['category_id'].required = False  # Поле категории не обязательно
+        self.fields['category'].required = False  # Поле категории не обязательно
 
 
 class CategoryForm(forms.ModelForm):
@@ -55,14 +55,14 @@ class CategoryForm(forms.ModelForm):
 class RegularIncomeForm(forms.ModelForm):
     class Meta:
         model = RegularBalanceChange
-        fields = ['sum', 'category_id', 'description', 'regularity']
+        fields = ['sum', 'category', 'description', 'regularity']
         labels = {
             'sum': 'Сумма',
-            'category_id': 'Категория',
+            'category': 'Категория',
             'description': 'Описание',
             'regularity': 'Регулярность',
         }
 
         widgets = {
-            'category_id': forms.Select(attrs={'class': 'form-control'}),
+            'category': forms.Select(attrs={'class': 'form-control'}),
         }

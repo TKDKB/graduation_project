@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from app.views import home_page_view, create_income, create_expence, create_category, create_regular_income
+from app.views import home_page_view, create_income, create_expence, create_category, create_regular_income, filter_balance_changes
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,5 +26,5 @@ urlpatterns = [
     path('create-expence/', create_expence, name="create-expence"),
     path('create-category/', create_category, name="create-category"),
     path('create-regular-income/', create_regular_income, name="create-regular-income"),
-
+    path('filter-balance-changes/', filter_balance_changes, name="filter-balance-changes"),
 ]

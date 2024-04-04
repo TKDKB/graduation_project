@@ -6,6 +6,7 @@ from django.db.models import QuerySet, Q
 from django.contrib.auth.decorators import login_required
 from .models import BalanceChange, Category
 from .forms import IncomeForm, ExpenceForm, CategoryForm, RegularIncomeForm
+from .service import get_statistics_for_graph
 
 
 @login_required
@@ -105,3 +106,9 @@ def filter_balance_changes(request):
     return render(request, 'home.html',
                   {'balance_changes': balance_changes, 'selected_type': selected_type,
                    'selected_category': selected_category, "categories": categories})
+
+
+@login_required
+def test(request: WSGIRequest):
+    get_statistics_for_graph(request)
+    return render(request, template_name='test.html')

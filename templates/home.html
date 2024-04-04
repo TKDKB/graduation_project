@@ -5,23 +5,111 @@
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>Finance Management</title>
-   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap" rel="stylesheet">
+
+
    <style>
+       .custom-color {
+           background-color: #203F7C;
+           color: #ffffff;
+        }
+       .custom-button {
+            padding: 10px 20px;
+            border: 2px solid #203F7C; /* Цвет рамки кнопки */
+            color: #ffffff; /* Цвет текста на кнопке */
+            text-decoration: none;
+            background-color: #203F7C; /* Цвет кнопки */
+            transition: color 0.3s, background-color 0.3s;
+       }
+       .custom-button:hover {
+            color: #203F7C; /* Цвет текста при пм */
+            background-color: #fff; /* Цвет внутренней области кнопки при наведении */
+            border: 2px solid #203F7C; /* Цвет рамки кнопки */
+       }
+       .custom-button-create-expence {
+            color: #ffffff; /* Цвет текста на кнопке */
+            background-color: #203F7C; /* Цвет кнопки */
+            transition: color 0.3s, background-color 0.3s;
+            border: 2px solid #203F7C; /* Цвет границы кнопки */
+       }
+       .custom-button-create-expence:hover {
+            color: #203F7C; /* Цвет текста при наведении */
+            background-color: #fff; /* Цвет внутренней области кнопки при наведении */
+            border: 2px solid #203F7C; /* Цвет границы кнопки */
+       }
+       .custom-button-create-income {
+            color: #ffffff; /* Цвет текста на кнопке */
+            background-color: #203F7C; /* Цвет кнопки */
+            transition: color 0.3s, background-color 0.3s;
+            border: 2px solid #203F7C; /* Цвет границы кнопки */
+       }
+       .custom-button-create-income:hover {
+            color: #203F7C; /* Цвет текста при наведении */
+            background-color: #fff; /* Цвет внутренней области кнопки при наведении */
+            border: 2px solid #203F7C; /* Цвет границы кнопки */
+       }
+       hr.custom {
+            width: 90%; /* Изменение ширины */
+            border: none; /* Убираем стандартные бордеры */
+            height: 2px; /* Высота разделителя */
+            color: #203F7C;
+            background: linear-gradient(to right, transparent, #203F7C, transparent);
+            opacity: 100;
+            margin: 0 auto;
+
+       }
        body {
-           font-family: 'Klima', sans-serif;
+           font-family: 'Roboto Condensed', sans-serif;
        }
-       h1, h3 {
-           font-family: 'Squada One', sans-serif;
+       h1, h3, h5 {
+           font-family: 'Oswald', sans-serif;
        }
+       .rounded-navbar {
+            border-radius: 0 0 10px 10px; /* Задаем радиус скругления */
+        }
    </style>
 </head>
 <body>
-   <div class="container mt-5">
-       <h1 class="text-center mb-4">Finance Management</h1>
+    <nav class="navbar navbar-expand-lg rounded-navbar" style="background-color: #203F7C; text-decoration: #ffffff">
+      <div class="container-fluid">
+        <a class="navbar-brand text-light" href="{% url 'home-page' %}">FIN</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item ">
+              <a class="nav-link active text-light" aria-current="page" href="{% url 'home-page' %}">/Home/</a>
+            </li>
+          </ul>
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link text-light" href="{% url 'profile' %}">/{{ request.user.username }}/
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                      <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                      <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                    </svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
 
-       <div class="row">
-           <div class="col-md-6 offset-md-3">
-               <h3 class="mb-3">Balance Changes</h3>
+
+    <h1 class="text-center mb-4">FIN</h1>
+    <hr class="custom">
+{#   <div class="container ml-4 mr-4">#}
+
+       <div class="row mt-4">
+
+           <div class="col-2 ml-4 mr-2">
+               <h4 class="mb-3 text-center">FILTERS</h4>
                     <form id="filterForm" action="{% url 'filter-balance-changes' %}" method="GET">
                         <div class="form-group">
                             <label for="type">Type:</label>
@@ -40,7 +128,7 @@
                                 {% endfor %}
                             </select>
                         </div>
-                        <button id="applyFiltersButton" type="button" class="btn btn-primary">Apply Filters</button>
+                        <button id="applyFiltersButton" type="button" class="btn custom-button">Apply Filters</button>
                     </form>
 
                     <script>
@@ -98,24 +186,70 @@
                     </script>
 
            </div>
-       </div>
+{#       </div>#}
 
-       <div class="row mt-4">
-           <div class="col-md-8 offset-md-2">
-               <h3 class="mb-3">Filtered Balance Changes</h3>
-               <ul class="list-group">
-                   {% for change in balance_changes %}
-                       <li class="list-group-item">
-                           <strong>{{ change.type }}</strong> - {{ change.amount }} - {{ change.date }}
-                       </li>
-                   {% endfor %}
-               </ul>
+{#       <div class="row mt-4">#}
+           <div class="col-7 mr-4">
+               <h4 class="mb-3 text-center">BALANCE CHANGES</h4>
+               <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Date</th>
+                      <th scope="col">Type</th>
+                      <th scope="col">Category</th>
+                      <th scope="col">Sum</th>
+                    </tr>
+                  </thead>
+                  <tbody class="table-group-divider">
+                    {% for change in balance_changes %}
+                        <tr>
+                          <td>{{ change.date }}</td>
+                          {% if change.type == "E" %}
+                            <td><h5><span class="badge text-bg-success">INCOME</span></h5></td>
+                          {% else %}
+                            <td><h5><span class="badge text-bg-danger">EXPENCE</span></h5></td>
+                          {% endif %}
+                          <td><h5><span class="badge custom-color">{% if change.category %}{{ change.category }}{% endif %}</span></h5></td>
+                          <td>{{ change.sum }}</td>
+                        </tr>
+{#                       <li class="list-group-item">#}
+{#                           <span class="badge text-bg-primary">{{ change.type }}</span> - {{ change.amount }} - {{ change.date }}#}
+{#                       </li>#}
+                    {% endfor %}
+                  </tbody>
+               </table>
+           </div>
+           <div class="col-2 mr-1 ">
+                <h4 class="mb-3 text-center">NEW BALANCE CHANGE</h4>
+                <h6 class="mb-3 text-center">single-time</h6>
+
+{#               <div class="col mr-4">#}
+{#                   <button id="" type="button" class="btn custom-button mb-1">Apply Filters</button>#}
+{#                   <button id="" type="button" class="btn custom-button">Apply Filters</button>#}
+{#               </div>#}
+{#               <div class="col">#}
+{#                   <button id="" type="button" class="btn custom-button mb-1">Apply Filters</button>#}
+{#                   <button id="" type="button" class="btn custom-button">Apply Filters</button>#}
+{#               </div>#}
+                <div class="d-grid gap-2 mb-3 col-6 mx-auto">
+                  <button class="btn btn-outline-success custom-button-create-income" type="button">Income</button>
+                  <button class="btn btn-outline-danger custom-button-create-expence" type="button">Expense</button>
+                </div>
+                <hr class="custom">
+
+               <h6 class="mb-3 mt-3 text-center">regular</h6>
+                <div class="d-grid gap-2 col-6 mx-auto">
+                  <button class="btn btn-outline-success custom-button-create-income" type="button">Regular Income</button>
+                  <button class="btn btn-outline-danger custom-button-create-expence" type="button">Regular Expence</button>
+                </div>
            </div>
        </div>
-   </div>
+{#   </div>#}
 
    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
 </body>
 </html>

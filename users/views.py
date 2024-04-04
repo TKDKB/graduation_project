@@ -1,3 +1,5 @@
+import json
+
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.http import HttpResponseRedirect, HttpResponseForbidden
@@ -10,6 +12,7 @@ from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth import update_session_auth_hash
+from app.service import get_statistics_for_graph
 
 
 """ Регистрация """
@@ -40,8 +43,10 @@ def register_view(request: WSGIRequest):
 @login_required
 def show_user(request: WSGIRequest):
     user = get_object_or_404(User, username=request.user.username)
-
-    return render(request, 'registration/show-user.html', {"user": user})
+    labels_values = get_statistics_for_graph(request)
+    # print(labels_values[1])
+    # print(labels_values)
+    return render(request, 'registration/show-user.html', {"user": user, "income_labels": labels_values[0], "income_values": labels_values[1], "expense_labels": labels_values[2], "expense_values": labels_values[3]})
 
 
 """ Изменить пользователя """

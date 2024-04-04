@@ -10,6 +10,8 @@ from django.db import models
 
 
 class Category(models.Model):
+    def __str__(self):
+        return self.name
     class Meta:
         db_table = 'categories'
 

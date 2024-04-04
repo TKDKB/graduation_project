@@ -11,7 +11,8 @@ def get_statistics_for_graph(request: WSGIRequest):
 
     balance_changes_list = list(balance_changes.values())
     categories_list = list(categories.values())
-    print(categories_list)
+    # print(balance_changes_list)
+    # print(categories_list)
 
     final_income_statistics_dict = {}
     final_expense_statistics_dict = {}
@@ -21,13 +22,17 @@ def get_statistics_for_graph(request: WSGIRequest):
 
         for balance_change in balance_changes_list:
             if balance_change["category_id"] == category["id"]:
+                print(balance_change["category_id"])
+                print(category["id"])
                 current_category_sum += balance_change["sum"]
         if category["type"] == "I":
-            # print(category["type"])
+            print(category["type"])
             final_income_statistics_dict[category["name"]] = current_category_sum
         else:
-            # print(category["type"])
+            print(category["type"])
             final_expense_statistics_dict[category["name"]] = current_category_sum
+
+        current_category_sum = 0
 
     print(final_income_statistics_dict)
     print(final_expense_statistics_dict)

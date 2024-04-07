@@ -66,10 +66,21 @@ def create_dataframe_for_excel_export(request: WSGIRequest):
     balance_changes = BalanceChange.objects.filter(user=request.user, date__range=[start_date, end_date]).select_related("user").prefetch_related(
         "category")
 
-    data = list(balance_changes.values("sum", "necessity", "category__name", "date", "description", "type"))
+    data = list(balance_changes.values("sum", "category__name", "date", "description", "type"))
     df = pd.DataFrame(data)
     df['date'] = df['date'].dt.tz_localize(None)
     df.to_excel('data.xlsx', index=False)
+    # with pd.ExcelWriter('data.xlsx', engine='xlsxwriter') as writer:
+    #     # Записываем DataFrame в файл Excel
+    #     df.to_excel(writer, index=False, sheet_name='Sheet1')
+    #
+    #     # Получаем объект workbook
+    #     workbook = writer.book
+    #     worksheet = writer.sheets['Sheet1']
+    #
+    #     # Создаем формат для даты и применяем его к столбцу с датами
+    #     date_format = workbook.add_format({'num_format': 'yyyy-mm-dd hh:mm:ss'})
+    #     worksheet.set_column('C:C', None, date_format)
 
 
 # def download_and_delete_file(request: WSGIRequest):

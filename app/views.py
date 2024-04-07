@@ -26,16 +26,16 @@ def home_page_view(request: WSGIRequest):
 @login_required
 def create_income(request: WSGIRequest):
     if request.method == 'POST':
-        form = IncomeForm(request.POST)
+        form = IncomeForm(request.user, request.POST)
         if form.is_valid():
             income = form.save(commit=False)
             income.type = "I"
-            income.user = request.user  # Назначение пользователя из запроса
+            income.user = request.user
             income.save()
             request.user.active_balance += income.sum
             request.user.save()
-            # Дополнительные действия после успешного создания объекта
-            return render(request, 'create-income-form.html', {'form': form})  # Перенаправление на страницу об успешном создании объекта
+            # return render(request, 'create-income-form.html', {'form': form})  # Перенаправление на страницу об успешном создании объекта
+            return HttpResponseRedirect(reverse('home-page'))
 
     else:
         form = IncomeForm(request.user)
@@ -46,14 +46,16 @@ def create_income(request: WSGIRequest):
 @login_required
 def create_expence(request: WSGIRequest):
     if request.method == 'POST':
-        form = ExpenceForm(request.POST)
+        form = ExpenceForm(request.user, request.POST)
         if form.is_valid():
             expence = form.save(commit=False)
             expence.type = "E"
-            expence.user = request.user  # Назначение пользователя из запроса
+            expence.user = request.user
             expence.save()
-            # Дополнительные действия после успешного создания объекта
-            return render(request, 'create-expense-form.html', {'form': form})  # Перенаправление на страницу об успешном создании объекта
+            request.user.active_balance -= expence.sum
+            request.user.save()
+            return HttpResponseRedirect(reverse('home-page'))
+            # return render(request, 'create-expense-form.html', {'form': form})  # Перенаправление на страницу об успешном создании объекта
     else:
         form = ExpenceForm(request.user)
 
@@ -110,10 +112,9 @@ def create_regular_income(request: WSGIRequest):
         if form.is_valid():
             r_income = form.save(commit=False)
             r_income.type = "E"
-            r_income.user = request.user  # Назначение пользователя из запроса
+            r_income.user = request.user
             r_income.save()
-            # Дополнительные действия после успешного создания объекта
-            return render(request, 'temporary_message.html')  # Перенаправление на страницу об успешном создании объекта
+            return render(request, 'temporary_message.html')
     else:
         form = RegularIncomeForm()
 

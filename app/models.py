@@ -31,7 +31,7 @@ class BalanceChange(models.Model):
         db_table = 'balance_changes'
 
     sum = models.IntegerField(verbose_name="Сумма")
-    necessity = models.BooleanField(verbose_name="Необходимость траты")
+    # necessity = models.BooleanField(verbose_name="Необходимость траты")
     category = models.ForeignKey(Category, null=True, on_delete=models.SET_NULL)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)

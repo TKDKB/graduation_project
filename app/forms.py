@@ -28,10 +28,10 @@ class IncomeForm(forms.ModelForm):
 class ExpenceForm(forms.ModelForm):
     class Meta:
         model = BalanceChange
-        fields = ['sum', 'necessity', 'category', 'description']
+        fields = ['sum', 'category', 'description']
         labels = {
             'sum': 'Сумма',
-            'necessity': 'Необходимость траты',
+            # 'necessity': 'Необходимость траты',
             'category': 'Категория',
             'description': 'Описание',
         }

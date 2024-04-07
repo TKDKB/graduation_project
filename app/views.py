@@ -6,7 +6,9 @@ from django.db.models import QuerySet, Q
 from django.contrib.auth.decorators import login_required
 from .models import BalanceChange, Category
 from .forms import IncomeForm, ExpenceForm, CategoryForm, RegularIncomeForm
-from .service import get_statistics_for_graph
+from .service import get_statistics_for_graph, create_dataframe_for_excel_export
+from django.http import FileResponse, HttpResponse
+import os
 
 
 @login_required
@@ -30,12 +32,15 @@ def create_income(request: WSGIRequest):
             income.type = "I"
             income.user = request.user  # Назначение пользователя из запроса
             income.save()
+            request.user.active_balance += income.sum
+            request.user.save()
             # Дополнительные действия после успешного создания объекта
-            return render(request, 'temporary_message.html')  # Перенаправление на страницу об успешном создании объекта
-    else:
-        form = IncomeForm()
+            return render(request, 'create-income-form.html', {'form': form})  # Перенаправление на страницу об успешном создании объекта
 
-    return render(request, 'create_income_form.html', {'form': form})
+    else:
+        form = IncomeForm(request.user)
+
+    return render(request, 'create-income-form.html', {'form': form})
 
 
 @login_required
@@ -48,11 +53,27 @@ def create_expence(request: WSGIRequest):
             expence.user = request.user  # Назначение пользователя из запроса
             expence.save()
             # Дополнительные действия после успешного создания объекта
-            return render(request, 'temporary_message.html')  # Перенаправление на страницу об успешном создании объекта
+            return render(request, 'create-expense-form.html', {'form': form})  # Перенаправление на страницу об успешном создании объекта
     else:
-        form = ExpenceForm()
+        form = ExpenceForm(request.user)
 
-    return render(request, 'create_income_form.html', {'form': form})
+    return render(request, 'create-expense-form.html', {'form': form})
+
+
+# @login_required
+# def create_category(request: WSGIRequest):
+#     if request.method == 'POST':
+#         form = CategoryForm(request.POST)
+#         if form.is_valid():
+#             category = form.save(commit=False)
+#             category.is_private = True
+#             category.save()
+#             category.user.set([request.user])
+#             return render(request, 'temporary_message.html')
+#     else:
+#         form = CategoryForm()
+#
+#     return render(request, 'create_category_form.html', {'form': form})
 
 
 @login_required
@@ -60,15 +81,25 @@ def create_category(request: WSGIRequest):
     if request.method == 'POST':
         form = CategoryForm(request.POST)
         if form.is_valid():
-            category = form.save(commit=False)
-            category.is_private = True
-            category.save()
-            category.user.set([request.user])
-            return render(request, 'temporary_message.html')
+            category_name = form.cleaned_data['name']
+            user = request.user
+
+            existing_category = Category.objects.filter(name=category_name).first()
+
+            if existing_category:
+                existing_category.user.add(user)
+            else:
+                new_category = form.save(commit=False)
+                new_category.is_private = True
+                new_category.save()
+                new_category.user.add(user)
+
+            return HttpResponseRedirect(reverse('home-page'))
+
     else:
         form = CategoryForm()
 
-    return render(request, 'create_category_form.html', {'form': form})
+    return render(request, 'create-category-form.html', {'form': form})
 
 
 # TODO: тут есть вопросы по реализации
@@ -110,5 +141,23 @@ def filter_balance_changes(request):
 
 @login_required
 def test(request: WSGIRequest):
-    get_statistics_for_graph(request)
+    create_dataframe_for_excel_export(request)
     return render(request, template_name='test.html')
+
+@login_required
+def export(request: WSGIRequest):
+    create_dataframe_for_excel_export(request)
+    file_path = 'data.xlsx'
+    file_name = os.path.basename(file_path)
+
+    try:
+        with open(file_path, 'rb') as file:
+            response = HttpResponse(file, content_type='application/vnd.ms-excel')
+            response['Content-Disposition'] = 'attachment; filename=' + file_name
+
+            # Удаляем файл после отправки
+            os.remove(file_path)
+
+            return response
+    except FileNotFoundError:
+        return HttpResponse("Файл не найден", status=404)

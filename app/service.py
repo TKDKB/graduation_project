@@ -2,7 +2,12 @@ import json
 
 from django.core.handlers.wsgi import WSGIRequest
 from .models import BalanceChange, Category
-from .forms import IncomeForm, ExpenceForm, CategoryForm, RegularIncomeForm
+# from .forms import IncomeForm, ExpenceForm, CategoryForm, RegularIncomeForm
+import pandas as pd
+from datetime import datetime, timedelta
+from django.http import FileResponse, HttpResponse
+import os
+
 
 def get_statistics_for_graph(request: WSGIRequest):
     balance_changes = BalanceChange.objects.filter(user=request.user).select_related("user").prefetch_related(
@@ -52,3 +57,34 @@ def get_statistics_for_graph(request: WSGIRequest):
     expense_values = json.dumps(expence_values_list)  # Преобразование списка Python в JSON-строку
     return income_labels, income_values, expense_labels, expense_values
 
+
+def create_dataframe_for_excel_export(request: WSGIRequest):
+    data = {}
+    end_date = datetime.now()
+    start_date = end_date - timedelta(days=30)
+
+    balance_changes = BalanceChange.objects.filter(user=request.user, date__range=[start_date, end_date]).select_related("user").prefetch_related(
+        "category")
+
+    data = list(balance_changes.values("sum", "necessity", "category__name", "date", "description", "type"))
+    df = pd.DataFrame(data)
+    df['date'] = df['date'].dt.tz_localize(None)
+    df.to_excel('data.xlsx', index=False)
+
+
+# def download_and_delete_file(request: WSGIRequest):
+#     create_dataframe_for_excel_export(request)
+#     file_path = 'data.xlsx'
+#     file_name = os.path.basename(file_path)
+#
+#     try:
+#         with open(file_path, 'rb') as file:
+#             response = HttpResponse(file, content_type='application/vnd.ms-excel')
+#             response['Content-Disposition'] = 'attachment; filename=' + file_name
+#
+#             # Удаляем файл после отправки
+#             os.remove(file_path)
+#
+#             return response
+#     except FileNotFoundError:
+#         return HttpResponse("Файл не найден", status=404)

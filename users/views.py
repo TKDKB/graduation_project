@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.core.handlers.wsgi import WSGIRequest
 from .models import User
-from .forms import RegisterForm, UserProfileForm, PasswordResetForm
+from .forms import RegisterForm, PasswordResetForm, ActiveBalanceForm
 from django.contrib.auth.decorators import login_required
 from .email_senders import PasswordResetEmailSender, RegistrationConfirmEmailSender
 from django.utils.encoding import force_str
@@ -29,7 +29,7 @@ def register_view(request: WSGIRequest):
                 email=form.cleaned_data['email'],
                 password=form.cleaned_data['password1'],
                 active_balance=form.cleaned_data['active_balance'],
-                safe_balance=form.cleaned_data['safe_balance'],
+                # safe_balance=form.cleaned_data['safe_balance'],
                 is_active=False,
             )
             RegistrationConfirmEmailSender(request, user).send_mail()  # отправка письма для подтверждения
@@ -51,36 +51,36 @@ def show_user(request: WSGIRequest):
 
 """ Изменить пользователя """
 
-@login_required
-def edit_user(request: WSGIRequest):
-    user = get_object_or_404(User, username=request.user.username)
-    # if request.user != user:
-    #     return HttpResponseForbidden("У вас нет доступа к аккаунту этого пользователя!")
-    if request.method == 'GET':
-        form = UserProfileForm()
-        context = {
-            "form": form,
-            "user": request.user,
-        }
-
-        return render(request, "user_profile.html", context)
-
-    elif request.method == "POST":
-
-        form = UserProfileForm(request.POST)
-        if form.is_valid():
-
-            if form.cleaned_data['first_name']:
-                request.user.first_name = form.cleaned_data['first_name']
-
-            if form.cleaned_data['last_name']:
-                request.user.last_name = form.cleaned_data['last_name']
-
-            request.user.save()
-
-            return HttpResponseRedirect(reverse('show-profile', args=[request.user.username]))
-
-        return render(request, 'user_profile.html', {'form': form})
+# @login_required
+# def edit_user(request: WSGIRequest):
+#     user = get_object_or_404(User, username=request.user.username)
+#     # if request.user != user:
+#     #     return HttpResponseForbidden("У вас нет доступа к аккаунту этого пользователя!")
+#     if request.method == 'GET':
+#         form = UserProfileForm()
+#         context = {
+#             "form": form,
+#             "user": request.user,
+#         }
+#
+#         return render(request, "user_profile.html", context)
+#
+#     elif request.method == "POST":
+#
+#         form = UserProfileForm(request.POST)
+#         if form.is_valid():
+#
+#             if form.cleaned_data['first_name']:
+#                 request.user.first_name = form.cleaned_data['first_name']
+#
+#             if form.cleaned_data['last_name']:
+#                 request.user.last_name = form.cleaned_data['last_name']
+#
+#             request.user.save()
+#
+#             return HttpResponseRedirect(reverse('show-profile', args=[request.user.username]))
+#
+#         return render(request, 'user_profile.html', {'form': form})
 
 
 """ Отправить письмо для смены пароля """
@@ -121,3 +121,21 @@ def confirm_registration_receiver(request: WSGIRequest, token: str, uidb: str):
 
     return render(request, "registration/invalid-password-reset.html")
 
+
+@login_required
+def alter_active_balance(request: WSGIRequest):
+    if request.method == 'POST':
+        form = ActiveBalanceForm(request.POST)
+
+        if form.is_valid():
+            amount = form.cleaned_data['amount']
+
+            request.user.active_balance = amount
+            request.user.save()
+
+            return HttpResponseRedirect(reverse('profile'))
+
+    else:
+        form = ActiveBalanceForm()
+
+    return render(request, 'alter_active_balance.html', {'form': form})

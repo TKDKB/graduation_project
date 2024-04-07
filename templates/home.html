@@ -77,7 +77,10 @@
 <body>
     <nav class="navbar navbar-expand-lg rounded-navbar" style="background-color: #203F7C; text-decoration: #ffffff">
       <div class="container-fluid">
-        <a class="navbar-brand text-light" href="{% url 'home-page' %}">FIN</a>
+        <a class="navbar-brand text-light" href="{% url 'home-page' %}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-droplet" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M7.21.8C7.69.295 8 0 8 0q.164.544.371 1.038c.812 1.946 2.073 3.35 3.197 4.6C12.878 7.096 14 8.345 14 10a6 6 0 0 1-12 0C2 6.668 5.58 2.517 7.21.8m.413 1.021A31 31 0 0 0 5.794 3.99c-.726.95-1.436 2.008-1.96 3.07C3.304 8.133 3 9.138 3 10a5 5 0 0 0 10 0c0-1.201-.796-2.157-2.181-3.7l-.03-.032C9.75 5.11 8.5 3.72 7.623 1.82z"/>
+  <path fill-rule="evenodd" d="M4.553 7.776c.82-1.641 1.717-2.753 2.093-3.13l.708.708c-.29.29-1.128 1.311-1.907 2.87z"/>
+</svg>FIN</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -88,6 +91,12 @@
             </li>
           </ul>
           <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button class="nav-link text-light" type="submit">/log out/</button>
+                    </form>
+            </li>
             <li class="nav-item">
               <a class="nav-link text-light" href="{% url 'profile' %}">/{{ request.user.username }}/
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
@@ -105,7 +114,12 @@
     <h1 class="text-center mb-4">FIN</h1>
     <hr class="custom">
 {#   <div class="container ml-4 mr-4">#}
-
+{#        <div style="text-align: right; margin: 10px;">#}
+{#        <form action="{% url 'export' %}" method="post">#}
+{#            {% csrf_token %}#}
+{#            <button class="btn btn-outline-success custom-button-create-income" type="submit">export to excel</button>#}
+{#        </form>#}
+{#        </div>#}
        <div class="row mt-4">
 
            <div class="col-2 ml-4 mr-2">
@@ -130,6 +144,7 @@
                         </div>
                         <button id="applyFiltersButton" type="button" class="btn custom-button">Apply Filters</button>
                     </form>
+
 
                     <script>
                         document.getElementById('typeSelect').addEventListener('change', function() {
@@ -184,13 +199,20 @@
                             window.history.pushState({path: newUrl}, '', newUrl);
                         });
                     </script>
-
            </div>
 {#       </div>#}
 
 {#       <div class="row mt-4">#}
            <div class="col-7 mr-4">
                <h4 class="mb-3 text-center">BALANCE CHANGES</h4>
+                <div style="text-align: center; margin: 10px">
+                <form action="{% url 'export' %}" method="post">
+                    {% csrf_token %}
+                    <button class="btn btn-outline-success custom-button-create-income" type="submit">export to excel <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-bar-up" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 10a.5.5 0 0 0 .5-.5V3.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 3.707V9.5a.5.5 0 0 0 .5.5m-7 2.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1-.5-.5"/>
+                    </svg></button>
+                </form>
+                </div>
                <table class="table">
                   <thead>
                     <tr>
@@ -204,10 +226,10 @@
                     {% for change in balance_changes %}
                         <tr>
                           <td>{{ change.date }}</td>
-                          {% if change.type == "E" %}
+                          {% if change.type == "I" %}
                             <td><h5><span class="badge text-bg-success">INCOME</span></h5></td>
                           {% else %}
-                            <td><h5><span class="badge text-bg-danger">EXPENCE</span></h5></td>
+                            <td><h5><span class="badge text-bg-danger">EXPENSE</span></h5></td>
                           {% endif %}
                           <td><h5><span class="badge custom-color">{% if change.category %}{{ change.category }}{% endif %}</span></h5></td>
                           <td>{{ change.sum }}</td>
@@ -232,8 +254,8 @@
 {#                   <button id="" type="button" class="btn custom-button">Apply Filters</button>#}
 {#               </div>#}
                 <div class="d-grid gap-2 mb-3 col-6 mx-auto">
-                  <button class="btn btn-outline-success custom-button-create-income" type="button">Income</button>
-                  <button class="btn btn-outline-danger custom-button-create-expence" type="button">Expense</button>
+                    <a href="{% url 'create-income' %}" class="btn btn-outline-success custom-button-create-income" type="button">Income</a>
+                    <a href="{% url 'create-expence' %}" class="btn btn-outline-danger custom-button-create-expence" type="button">Expense</a>
                 </div>
                 <hr class="custom">
 
@@ -241,6 +263,11 @@
                 <div class="d-grid gap-2 col-6 mx-auto">
                   <button class="btn btn-outline-success custom-button-create-income" type="button">Regular Income</button>
                   <button class="btn btn-outline-danger custom-button-create-expence" type="button">Regular Expence</button>
+                </div>
+                <hr class="custom" style="margin-top: 15px; margin-bottom: 15px">
+                <h4 style="text-align: center">NEW CATEGORY</h4>
+                <div class="d-grid gap-2 mb-3 col-6 mx-auto">
+                    <a href="{% url 'create-category' %}" class="btn btn-outline-success custom-button" type="button">Create</a>
                 </div>
            </div>
        </div>

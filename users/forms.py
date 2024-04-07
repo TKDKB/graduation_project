@@ -11,7 +11,7 @@ class RegisterForm(forms.Form):
     password1 = forms.CharField(widget=forms.PasswordInput, label="Пароль")
     password2 = forms.CharField(widget=forms.PasswordInput, label="Повторите пароль")
     active_balance = forms.FloatField(min_value=0)
-    safe_balance = forms.FloatField(min_value=0)
+    # safe_balance = forms.FloatField(min_value=0)
 
     def clean_username(self):
         username = self.cleaned_data.get('username')
@@ -47,9 +47,15 @@ class RegisterForm(forms.Form):
 
 """ Form for user edition """
 
-class UserProfileForm(forms.Form):
-    first_name = forms.CharField(max_length=150, required=False)
-    last_name = forms.CharField(max_length=150, required=False)
+class ActiveBalanceForm(forms.Form):
+    amount = forms.IntegerField(label='Новое значение')
+
+    def clean_amount(self):
+        amount = self.cleaned_data['amount']
+        if amount < 0:
+            raise forms.ValidationError("Значение не может быть отрицательным")
+        return amount
+
 
 
 """ Password reset form """

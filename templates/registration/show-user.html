@@ -98,6 +98,12 @@
                </ul>
                <ul class="navbar-nav ms-auto">
                    <li class="nav-item">
+                        <form action="{% url 'logout' %}" method="post">
+                            {% csrf_token %}
+                            <button class="nav-link text-light" type="submit">/log out/</button>
+                        </form>
+                   </li>
+                   <li class="nav-item">
                        <a class="nav-link text-light" href="{% url 'profile' %}">/{{ request.user.username }}/
                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
                                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
@@ -210,11 +216,14 @@
             <div class="accordion-body">
                 <div class="row mt-4">
                     <div class="col-10 mx-auto">
-                        <h5 class="mb-3">Active Balance: ${{ active_balance }}</h5>
-                        <h5 class="mb-3">Savings Balance: ${{ savings_balance }}</h5>
-                        <h5 class="mb-3">Username: {{ username }}</h5>
-                        <h5 class="mb-3">Email: {{ email }}</h5>
-                        <a href="{% url 'edit-profile' %}" class="btn custom-button mb-3">Edit Profile</a>
+                        <h5 class="mb-3">Username: {{ request.user.username }}</h5>
+                        <h5 class="mb-3">Email: {{ request.user.email }}</h5>
+                        <h5 class="mb-3">Active Balance: ${{ request.user.active_balance }}</h5>
+
+                        <div class="d-grid gap-2 mb-3 col-6 mx-auto">
+                            <a href="{% url 'alter-active-balance' %}" class="btn btn-outline-success custom-button" type="button">Alter Active Balance</a>
+                            <a href="{% url 'change-password-sender' %}" class="btn btn-outline-success custom-button" type="button">Change Password</a>
+                        </div>
                     </div>
                 </div>
             </div>

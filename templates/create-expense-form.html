@@ -89,6 +89,12 @@
             </li>
           </ul>
           <ul class="navbar-nav ms-auto">
+              <li class="nav-item">
+                        <form action="{% url 'logout' %}" method="post">
+                            {% csrf_token %}
+                            <button class="nav-link text-light" type="submit">/log out/</button>
+                        </form>
+              </li>
             <li class="nav-item">
               <a class="nav-link text-light" href="{% url 'profile' %}">/{{ request.user.username }}/
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
@@ -103,7 +109,7 @@
     </nav>
 
     <div class="container">
-        <h1 class="text-center mt-4">Register</h1>
+        <h1 class="text-center mt-4">Create Expense</h1>
         <hr class="custom">
 
         <div class="row justify-content-center">
@@ -111,7 +117,7 @@
                 <form method="post" class="mt-3">
                     {% csrf_token %}
                     {{ form|crispy }}
-                    <button type="submit" class="btn custom-button">Confirm</button>
+                    <button type="submit" class="btn custom-button">Create</button>
                 </form>
             </div>
         </div>

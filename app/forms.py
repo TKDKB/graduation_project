@@ -1,4 +1,6 @@
 from django import forms
+from django.core.validators import MinValueValidator
+
 from .models import BalanceChange, Category, RegularBalanceChange
 
 # TODO: Сделать нормальное поле для выбора периодичности в регулярном доходе
@@ -16,9 +18,11 @@ class IncomeForm(forms.ModelForm):
             'category': forms.Select(attrs={'class': 'form-control'}),
         }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, user, *args, **kwargs):
         super(IncomeForm, self).__init__(*args, **kwargs)
-        self.fields['category'].required = False  # Поле категории не обязательно
+        self.fields['category'].required = False
+        self.fields['category'].queryset = Category.objects.filter(type='I', user=user)
+        self.fields['sum'].validators.append(MinValueValidator(limit_value=0))
 
 
 class ExpenceForm(forms.ModelForm):
@@ -36,18 +40,19 @@ class ExpenceForm(forms.ModelForm):
             'category': forms.Select(attrs={'class': 'form-control'}),
         }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, user, *args, **kwargs):
         super(ExpenceForm, self).__init__(*args, **kwargs)
         self.fields['category'].required = False  # Поле категории не обязательно
+        self.fields['category'].queryset = Category.objects.filter(type='E', user=user)
+        self.fields['sum'].validators.append(MinValueValidator(limit_value=0))
 
 
 class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
-        fields = ['name', 'is_private', 'type']
+        fields = ['name', 'type']
         labels = {
             'name': 'Название',
-            'is_private': 'Приватность',
             'type': 'Тип изменения баланса',
         }
 

@@ -123,16 +123,16 @@
 
     </div>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-6">
-                <canvas id="myChart1" ></canvas>
-            </div>
-            <div class="col-6">
-                <canvas id="myChart2" ></canvas>
-            </div>
-        </div>
-    </div>
+{#    <div class="container">#}
+{#        <div class="row">#}
+{#            <div class="col-6">#}
+{#                <canvas id="myChart1" ></canvas>#}
+{#            </div>#}
+{#            <div class="col-6">#}
+{#                <canvas id="myChart2" ></canvas>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
 
        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
        <script>
@@ -150,55 +150,72 @@
         const IncomeValuesArray = JSON.parse('{{ income_values | safe }}');
         const ExpenseLabelsArray = JSON.parse('{{ expense_labels | safe }}');
         const ExpenseValuesArray = JSON.parse('{{ expense_values | safe }}');
-        const ctx1 = document.getElementById('myChart1');
-        new Chart(ctx1, {
-          type: 'doughnut',
-          data: {
-            labels: IncomeLabelsArray,
-            datasets: [{
-              label: 'Income',
-              data: IncomeValuesArray,
-              backgroundColor: generateColors(IncomeLabelsArray.length)
-            }]
-          },
-          options: {
-              plugins: {
-                  title: {
-                      display: true,
-                      text: 'Income Analysis'
-                  },
-                  legend: {
-                      position: 'left'
-                  }
+        if ((IncomeLabelsArray.length > 0 && IncomeValuesArray.length > 0) || (ExpenseLabelsArray.length > 0 && ExpenseValuesArray.length > 0)) {
+            document.write('<div class="container">');
+            document.write('<div class="row">');
+            if (IncomeLabelsArray.length > 0 && IncomeValuesArray.length > 0) {
+                document.write('<div class="col-6">');
+                document.write('<canvas id="myChart1"></canvas>');
+                document.write('</div>');
+            }
+            if (ExpenseLabelsArray.length > 0 && ExpenseValuesArray.length > 0) {
+                document.write('<div class="col-6">');
+                document.write('<canvas id="myChart2"></canvas>');
+                document.write('</div>');
+            }
+            document.write('</div>');
+            document.write('</div>');
+        }
+            const ctx1 = document.getElementById('myChart1');
+            new Chart(ctx1, {
+              type: 'doughnut',
+              data: {
+                labels: IncomeLabelsArray,
+                datasets: [{
+                  label: 'Income',
+                  data: IncomeValuesArray,
+                  backgroundColor: generateColors(IncomeLabelsArray.length)
+                }]
               },
-          }
-        });
-
-        const ctx2 = document.getElementById('myChart2');
-        new Chart(ctx2, {
-          type: 'doughnut',
-          data: {
-            labels: ExpenseLabelsArray,
-            datasets: [{
-              label: 'Expenses',
-              data: ExpenseValuesArray,
-              backgroundColor: generateColors(ExpenseLabelsArray.length),
-
-              borderWidth: 1
-            }]
-          },
-          options: {
-              plugins: {
-                  title: {
-                      display: true,
-                      text: 'Expenses Analysis',
+              options: {
+                  plugins: {
+                      title: {
+                          display: true,
+                          text: 'Income Analysis'
+                      },
+                      legend: {
+                          position: 'left'
+                      }
                   },
-                  legend: {
-                      position: 'right'
-                  }
+              }
+            });
+
+            const ctx2 = document.getElementById('myChart2');
+            new Chart(ctx2, {
+              type: 'doughnut',
+              data: {
+                labels: ExpenseLabelsArray,
+                datasets: [{
+                  label: 'Expenses',
+                  data: ExpenseValuesArray,
+                  backgroundColor: generateColors(ExpenseLabelsArray.length),
+
+                  borderWidth: 1
+                }]
               },
-          }
-        });
+              options: {
+                  plugins: {
+                      title: {
+                          display: true,
+                          text: 'Expenses Analysis',
+                      },
+                      legend: {
+                          position: 'right'
+                      }
+                  },
+              }
+            });
+
        </script>
 
 

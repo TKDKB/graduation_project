@@ -7,6 +7,7 @@ from django.http import FileResponse, HttpResponse
 import os
 from django_celery_beat.models import PeriodicTask, CrontabSchedule
 from django.core.handlers.wsgi import WSGIRequest
+
 # from .forms import RegularBalanceChange
 
 
@@ -102,7 +103,7 @@ def create_dataframe_for_excel_export(request: WSGIRequest):
 #         return HttpResponse("Файл не найден", status=404)
 
 
-def create_regular_income(request: WSGIRequest, name:str, sum: int, recharge_day: int):
+def create_regular_income_celery(request: WSGIRequest, name:str, sum: int, recharge_day: int):
     crontab = CrontabSchedule.objects.create(
         minute='0',
         hour='0',
@@ -116,7 +117,7 @@ def create_regular_income(request: WSGIRequest, name:str, sum: int, recharge_day
 
     p_task = PeriodicTask.objects.create(
         name=task_name,
-        task="path.to.task.periodic_income",
+        task="tasks.regular_balance_update",
         args=task_args,
         queue="income",
         crontab_id=crontab.id,

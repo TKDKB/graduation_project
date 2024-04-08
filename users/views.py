@@ -5,6 +5,8 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.core.handlers.wsgi import WSGIRequest
 from .models import User
+from app.models import Category
+from django_celery_beat.models import PeriodicTask
 from .forms import RegisterForm, PasswordResetForm, ActiveBalanceForm
 from django.contrib.auth.decorators import login_required
 from .email_senders import PasswordResetEmailSender, RegistrationConfirmEmailSender
@@ -43,10 +45,28 @@ def register_view(request: WSGIRequest):
 @login_required
 def show_user(request: WSGIRequest):
     user = get_object_or_404(User, username=request.user.username)
+    categories = Category.objects.filter(user=user)
+    regular_incomes = PeriodicTask.objects.filter(user=user)
+    print("FFF", regular_incomes)
+    for reg_inc in regular_incomes:
+        reg_inc.name = reg_inc.name.split('name_')[1]
+        task_args_list = reg_inc.args.strip('[]').split(',')
+        task_args_list = [int(arg.strip()) for arg in task_args_list]
+        reg_inc.args = task_args_list[1] / 100
     labels_values = get_statistics_for_graph(request)
-    # print(labels_values[1])
-    # print(labels_values)
-    return render(request, 'registration/show-user.html', {"user": user, "income_labels": labels_values[0], "income_values": labels_values[1], "expense_labels": labels_values[2], "expense_values": labels_values[3]})
+    return render(request, 'registration/show-user.html',
+                  {
+                      "user": user,
+                      "categories": categories,
+                      "regular_incomes": regular_incomes,
+                      "income_labels": labels_values[0],
+                      "income_values": labels_values[1],
+                      "expense_labels": labels_values[2],
+                      "expense_values": labels_values[3],
+                      "income_non_zero": labels_values[4],
+                      "expense_non_zero": labels_values[5]
+                  }
+            )
 
 
 """ Изменить пользователя """

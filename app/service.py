@@ -51,13 +51,26 @@ def get_statistics_for_graph(request: WSGIRequest):
     expense_labels_list = list(final_expense_statistics_dict.keys())
     expence_values_list = list(final_expense_statistics_dict.values())
 
+    income_non_zero = False
+    expense_non_zero = False
+
+    for income in income_values_list:
+        if income > 0:
+            income_non_zero = True
+
+    for expense in expence_values_list:
+        if expense > 0:
+            expense_non_zero = True
+
     income_labels = json.dumps(income_labels_list)  # Преобразование списка Python в JSON-строку
     income_values = json.dumps(income_values_list)  # Преобразование списка Python в JSON-строку
     print(income_values)
 
     expense_labels = json.dumps(expense_labels_list)  # Преобразование списка Python в JSON-строку
     expense_values = json.dumps(expence_values_list)  # Преобразование списка Python в JSON-строку
-    return income_labels, income_values, expense_labels, expense_values
+    income_non_zero = json.dumps(income_non_zero)
+    expense_non_zero = json.dumps(expense_non_zero)
+    return income_labels, income_values, expense_labels, expense_values, income_non_zero, expense_non_zero
 
 
 def create_dataframe_for_excel_export(request: WSGIRequest):

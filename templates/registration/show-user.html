@@ -150,7 +150,9 @@
         const IncomeValuesArray = JSON.parse('{{ income_values | safe }}');
         const ExpenseLabelsArray = JSON.parse('{{ expense_labels | safe }}');
         const ExpenseValuesArray = JSON.parse('{{ expense_values | safe }}');
-        if ((IncomeLabelsArray.length > 0 && IncomeValuesArray.length > 0) || (ExpenseLabelsArray.length > 0 && ExpenseValuesArray.length > 0)) {
+        const IncomeNonZero = JSON.parse('{{ income_non_zero | safe }}');
+        const ExpenseNonZero = JSON.parse('{{ expense_non_zero | safe }}');
+        if ((IncomeLabelsArray.length > 0 && IncomeValuesArray.length > 0 && IncomeNonZero) || (ExpenseLabelsArray.length > 0 && ExpenseValuesArray.length > 0 && ExpenseNonZero)) {
             document.write('<div class="container">');
             document.write('<div class="row">');
             if (IncomeLabelsArray.length > 0 && IncomeValuesArray.length > 0) {
@@ -249,13 +251,117 @@
       <div class="accordion-item">
         <h2 class="accordion-header">
           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-            Accordion Item #3
+            Categories
           </button>
         </h2>
         <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
           <div class="accordion-body">
-            <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+              <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Name</th>
+                      <th scope="col">Type</th>
+                      <th scope="col"></th>
+                    </tr>
+                  </thead>
+                  <tbody class="table-group-divider">
+                    {% for category in categories %}
+                        <tr>
+                          <td>{{ category.name }}</td>
+                          {% if category.type == "I" %}
+                            <td><h5><span class="badge text-bg-success">INCOME</span></h5></td>
+                          {% else %}
+                            <td><h5><span class="badge text-bg-danger">EXPENSE</span></h5></td>
+                          {% endif %}
+                          <td>
+                            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal{{ category.id }}">delete</button>
+                            <div class="modal" id="exampleModal{{ category.id }}" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Are you sure?</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>You will not be able to undo it.</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancel</button>
+                                            <form action="{% url 'delete-category' category.id %}" method="post">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-outline-danger">Delete</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                          </td>
+                        </tr>
+{#                       <li class="list-group-item">#}
+{#                           <span class="badge text-bg-primary">{{ change.type }}</span> - {{ change.amount }} - {{ change.date }}#}
+{#                       </li>#}
+                    {% endfor %}
+                  </tbody>
+              </table>
           </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+            Regular Balance Replenishment
+          </button>
+        </h2>
+        <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Name</th>
+                      <th scope="col">Sum</th>
+                      <th scope="col">Day Of Month</th>
+                      <th scope="col"></th>
+                    </tr>
+                  </thead>
+                  <tbody class="table-group-divider">
+                    {% for reg_inc in regular_incomes %}
+                        <tr>
+                          <td>{{ reg_inc.name }}</td>
+                          <td>
+                            {{ reg_inc.args }}
+                          </td>
+                          <td>{{ reg_inc.crontab.day_of_month }}</td>
+{#                          <td>#}
+{#                            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal{{ category.id }}">delete</button>#}
+{#                            <div class="modal" id="exampleModal{{ category.id }}" tabindex="-1">#}
+{#                                <div class="modal-dialog">#}
+{#                                    <div class="modal-content">#}
+{#                                        <div class="modal-header">#}
+{#                                            <h5 class="modal-title">Are you sure?</h5>#}
+{#                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>#}
+{#                                        </div>#}
+{#                                        <div class="modal-body">#}
+{#                                            <p>You will not be able to undo it.</p>#}
+{#                                        </div>#}
+{#                                        <div class="modal-footer">#}
+{#                                            <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancel</button>#}
+{#                                            <form action="{% url 'delete-category' category.id %}" method="post">#}
+{#                                                {% csrf_token %}#}
+{#                                                <button type="submit" class="btn btn-outline-danger">Delete</button>#}
+{#                                            </form>#}
+{#                                        </div>#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                          </td>#}
+                        </tr>
+                       <li class="list-group-item">
+                           <span class="badge text-bg-primary">{{ change.type }}</span> - {{ change.amount }} - {{ change.date }}
+                       </li>
+                    {% endfor %}
+                  </tbody>
+                </table>
+            </div>
         </div>
       </div>
     </div>

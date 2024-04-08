@@ -1,6 +1,11 @@
-from django.core.handlers.wsgi import WSGIRequest
+from users.models import User
 
+def regular_balance_update(user_id: int, sum: int):
+    try:
+        user = User.objects.filter(id=user_id)
+    except User.DoesNotExist:
+        pass
+    else:
+        user.active_balance += sum
+        user.save(update_fields=["active_balance"])
 
-def regular_balance_update(request:WSGIRequest, sum: int):
-    request.user.active_balance += sum
-    request.user.save()

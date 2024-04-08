@@ -63,6 +63,18 @@ def create_expence(request: WSGIRequest):
 
 
 @login_required
+def delete_category(request: WSGIRequest, id: int):
+    category = get_object_or_404(Category, id=id)
+    user = request.user
+
+    if category.user.count() > 1:
+        user.categories.remove(category)
+        return HttpResponseRedirect(reverse('profile'))
+    else:
+        category.delete()
+        return HttpResponseRedirect(reverse('profile'))
+
+@login_required
 def delete_balance_change(request: WSGIRequest, id: int):
     BalanceChange.objects.filter(id=id).delete()
     return HttpResponseRedirect(reverse('home-page'))
@@ -187,3 +199,8 @@ def create_regular_income(request: WSGIRequest):
         form = RegularIncomeForm()
 
     return render(request, 'create-regular-income-form.html', {'form': form})
+
+
+# @login_required
+# def delete_regular_income(request: WSGIRequest, id: int):
+#

@@ -23,7 +23,7 @@ class Category(models.Model):
         expence = ('E', 'Expence')
 
     type = models.CharField(max_length=1, choices=Type.choices, verbose_name="Тип изменения баланса")
-    user = models.ManyToManyField(get_user_model(), related_name='users')
+    user = models.ManyToManyField(get_user_model(), related_name='categories')
 
 
 class BalanceChange(models.Model):

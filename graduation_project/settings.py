@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'app.apps.AppConfig',
     'users',
     'crispy_forms',
-    'crispy_bootstrap5'
+    'crispy_bootstrap5',
+    'django_celery_beat',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"

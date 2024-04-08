@@ -57,17 +57,25 @@ class CategoryForm(forms.ModelForm):
         }
 
 
-class RegularIncomeForm(forms.ModelForm):
-    class Meta:
-        model = RegularBalanceChange
-        fields = ['sum', 'category', 'description', 'regularity']
-        labels = {
-            'sum': 'Сумма',
-            'category': 'Категория',
-            'description': 'Описание',
-            'regularity': 'Регулярность',
-        }
+# class RegularIncomeForm(forms.ModelForm):
+#     class Meta:
+#         model = RegularBalanceChange
+#         fields = ['sum', 'category', 'description', 'regularity']
+#         labels = {
+#             'sum': 'Сумма',
+#             'category': 'Категория',
+#             'description': 'Описание',
+#             'regularity': 'Регулярность',
+#         }
+#
+#         widgets = {
+#             'category': forms.Select(attrs={'class': 'form-control'}),
+#         }
 
-        widgets = {
-            'category': forms.Select(attrs={'class': 'form-control'}),
-        }
+
+class RegularIncomeForm(forms.Form):
+    name = forms.CharField(label="Название", max_length=255)
+
+    replenishment_amount = forms.DecimalField(label='Сумма пополнения', max_digits=10, decimal_places=2,
+                                              min_value=0)
+    recharge_day = forms.IntegerField(label='День месяца', min_value=1, max_value=31)

@@ -6,7 +6,7 @@ from django.db.models import QuerySet, Q
 from django.contrib.auth.decorators import login_required
 from .models import BalanceChange, Category
 from .forms import IncomeForm, ExpenceForm, CategoryForm, RegularIncomeForm
-from .service import get_statistics_for_graph, create_dataframe_for_excel_export
+from .service import get_statistics_for_graph, create_dataframe_for_excel_export, create_regular_income
 from django.http import FileResponse, HttpResponse
 import os
 
@@ -60,6 +60,12 @@ def create_expence(request: WSGIRequest):
         form = ExpenceForm(request.user)
 
     return render(request, 'create-expense-form.html', {'form': form})
+
+
+@login_required
+def delete_balance_change(request: WSGIRequest, id: int):
+    BalanceChange.objects.filter(id=id).delete()
+    return HttpResponseRedirect(reverse('home-page'))
 
 
 # @login_required
@@ -162,3 +168,14 @@ def export(request: WSGIRequest):
             return response
     except FileNotFoundError:
         return HttpResponse("Файл не найден", status=404)
+
+
+@login_required
+def create_regular_income(request: WSGIRequest):
+    if request.method == 'POST':
+        form = RegularIncomeForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            sum = int(form.cleaned_data['replenishment_amount'] * 100)
+            recharge_day = form.cleaned_data['recharge_day']
+            create_regular_income(request, name, sum, recharge_day)

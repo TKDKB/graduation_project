@@ -1,12 +1,13 @@
 import json
-
-from django.core.handlers.wsgi import WSGIRequest
 from .models import BalanceChange, Category
-# from .forms import IncomeForm, ExpenceForm, CategoryForm, RegularIncomeForm
+from .forms import IncomeForm, ExpenceForm, CategoryForm, RegularIncomeForm
 import pandas as pd
 from datetime import datetime, timedelta
 from django.http import FileResponse, HttpResponse
 import os
+from django_celery_beat.models import PeriodicTask, CrontabSchedule
+from django.core.handlers.wsgi import WSGIRequest
+# from .forms import RegularBalanceChange
 
 
 def get_statistics_for_graph(request: WSGIRequest):
@@ -99,3 +100,26 @@ def create_dataframe_for_excel_export(request: WSGIRequest):
 #             return response
 #     except FileNotFoundError:
 #         return HttpResponse("Файл не найден", status=404)
+
+
+def create_regular_income(request: WSGIRequest, name:str, sum: int, recharge_day: int):
+    crontab = CrontabSchedule.objects.create(
+        minute='0',
+        hour='0',
+        day_of_week=1,
+        day_of_month=recharge_day,
+        month_of_year='*'
+    )
+
+    task_name = f"user_{request.user.id}_income_{sum}_name_{name}"
+    task_args = f"[{request.user.id}, {sum}]"
+
+    p_task = PeriodicTask.objects.create(
+        name=task_name,
+        task="path.to.task.periodic_income",
+        args=task_args,
+        queue="income",
+        crontab_id=crontab.id,
+    )
+
+    request.user.periodic_tasks.add(p_task)

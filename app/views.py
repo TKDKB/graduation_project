@@ -110,21 +110,21 @@ def create_category(request: WSGIRequest):
     return render(request, 'create-category-form.html', {'form': form})
 
 
-# TODO: тут есть вопросы по реализации
-@login_required
-def create_regular_income(request: WSGIRequest):
-    if request.method == 'POST':
-        form = RegularIncomeForm(request.POST)
-        if form.is_valid():
-            r_income = form.save(commit=False)
-            r_income.type = "E"
-            r_income.user = request.user
-            r_income.save()
-            return render(request, 'temporary_message.html')
-    else:
-        form = RegularIncomeForm()
-
-    return render(request, 'create_income_form.html', {'form': form})
+# # TODO: тут есть вопросы по реализации
+# @login_required
+# def create_regular_income(request: WSGIRequest):
+#     if request.method == 'POST':
+#         form = RegularIncomeForm(request.POST)
+#         if form.is_valid():
+#             r_income = form.save(commit=False)
+#             r_income.type = "E"
+#             r_income.user = request.user
+#             r_income.save()
+#             return render(request, 'temporary_message.html')
+#     else:
+#         form = RegularIncomeForm()
+#
+#     return render(request, 'create_income_form.html', {'form': form})
 
 
 @login_required
@@ -179,3 +179,8 @@ def create_regular_income(request: WSGIRequest):
             sum = int(form.cleaned_data['replenishment_amount'] * 100)
             recharge_day = form.cleaned_data['recharge_day']
             create_regular_income(request, name, sum, recharge_day)
+            return HttpResponseRedirect(reverse('home'))
+    else:
+        form = RegularIncomeForm()
+
+    return render(request, 'create-regular-income-form.html', {'form': form})

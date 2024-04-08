@@ -184,6 +184,6 @@ def create_regular_income(request: WSGIRequest):
             errors = form.errors
             print(errors)
     else:
-        form = RegularIncomeForm(request.user)
+        form = RegularIncomeForm()
 
     return render(request, 'create-regular-income-form.html', {'form': form})

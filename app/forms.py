@@ -80,12 +80,12 @@ class RegularIncomeForm(forms.Form):
     replenishment_amount = forms.DecimalField(label='Сумма пополнения', max_digits=10, decimal_places=2,
                                               min_value=0)
     recharge_day = forms.IntegerField(label='День месяца', min_value=1, max_value=31)
-    def __init__(self, user, *args, **kwargs):
-        super(RegularIncomeForm, self).__init__(*args, **kwargs)
-        self.user = user
-
-    def clean_name(self):
-        name = self.cleaned_data.get('name')
-        if PeriodicTask.objects.filter(user=self.user, name=name).exists():
-            raise forms.ValidationError("У вас уже существует регулярный доход с таким названием. Пожалуйста, выберите другое.")
-        return name
+    # def __init__(self, user, *args, **kwargs):
+    #     super(RegularIncomeForm, self).__init__(*args, **kwargs)
+    #     self.user = user
+    #
+    # def clean_name(self):
+    #     name = self.cleaned_data.get('name')
+    #     if PeriodicTask.objects.filter(user=self.user, name=name).exists():
+    #         raise forms.ValidationError("У вас уже существует регулярный доход с таким названием. Пожалуйста, выберите другое.")
+    #     return name

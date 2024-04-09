@@ -124,7 +124,6 @@ def create_regular_income_celery(request: WSGIRequest, name:str, sum: int, recha
         day_of_month=recharge_day,
         month_of_year='*'
     )
-
     task_name = f"user_{request.user.id}_income_{sum}_name_{name}"
     task_args = f"[{request.user.id}, {sum}]"
 

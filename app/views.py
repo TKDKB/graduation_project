@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.db.models import QuerySet, Q
 from django.contrib.auth.decorators import login_required
 from .models import BalanceChange, Category
+from django_celery_beat.models import PeriodicTask
 from .forms import IncomeForm, ExpenceForm, CategoryForm, RegularIncomeForm
 from .service import get_statistics_for_graph, create_dataframe_for_excel_export, create_regular_income_celery
 from django.http import FileResponse, HttpResponse
@@ -182,23 +183,43 @@ def export(request: WSGIRequest):
         return HttpResponse("Файл не найден", status=404)
 
 
+# @login_required
+# def create_regular_income(request: WSGIRequest):
+#     if request.method == 'POST':
+#         form = RegularIncomeForm(request.POST)
+#         if form.is_valid():
+#             name = form.cleaned_data['name']
+#             sum = int(form.cleaned_data['replenishment_amount'] * 100)
+#             recharge_day = form.cleaned_data['recharge_day']
+#             create_regular_income_celery(request, name, sum, recharge_day)
+#             return HttpResponseRedirect(reverse('home-page'))
+#         else:
+#             errors = form.errors
+#             print(errors)
+#     else:
+#         form = RegularIncomeForm(request.user)
+#
+#     return render(request, 'create-regular-income-form.html', {'form': form})
+
 @login_required
 def create_regular_income(request: WSGIRequest):
     if request.method == 'POST':
-        form = RegularIncomeForm(request.POST)
+        form = RegularIncomeForm(request.user, request.POST)
         if form.is_valid():
             name = form.cleaned_data['name']
-            sum = int(form.cleaned_data['replenishment_amount'] * 100)
+            sum = form.cleaned_data['replenishment_amount'] * 100
             recharge_day = form.cleaned_data['recharge_day']
             create_regular_income_celery(request, name, sum, recharge_day)
             return HttpResponseRedirect(reverse('home-page'))
-        else:
-            errors = form.errors
-            print(errors)
     else:
-        form = RegularIncomeForm()
+        form = RegularIncomeForm(request.user)
 
     return render(request, 'create-regular-income-form.html', {'form': form})
+
+@login_required
+def delete_regular_income(request: WSGIRequest, id: int):
+    PeriodicTask.objects.filter(id=id).delete()
+    return HttpResponseRedirect(reverse('profile'))
 
 
 # @login_required

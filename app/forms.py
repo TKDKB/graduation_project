@@ -6,6 +6,8 @@ from django_celery_beat.models import PeriodicTask
 
 # TODO: Сделать нормальное поле для выбора периодичности в регулярном доходе
 class IncomeForm(forms.ModelForm):
+    sum = forms.DecimalField(max_digits=10, decimal_places=2)
+
     class Meta:
         model = BalanceChange
         fields = ['sum', 'category', 'description']

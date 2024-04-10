@@ -57,6 +57,7 @@ def show_user(request: WSGIRequest):
     return render(request, 'registration/show-user.html',
                   {
                       "user": user,
+                      "active_balance": user.active_balance / 100,
                       "categories": categories,
                       "regular_incomes": regular_incomes,
                       "income_labels": labels_values[0],
@@ -148,7 +149,7 @@ def alter_active_balance(request: WSGIRequest):
         form = ActiveBalanceForm(request.POST)
 
         if form.is_valid():
-            amount = form.cleaned_data['amount']
+            amount = int(form.cleaned_data['sum'] * 100)
 
             request.user.active_balance = amount
             request.user.save()

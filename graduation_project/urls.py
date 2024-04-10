@@ -22,6 +22,7 @@ from app.views import home_page_view, create_income, create_expence, create_cate
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include("users.urls")),
+    path('api/balance_changes/', include("app.api.urls")),
     path('home/', home_page_view, name="home-page"),
     path('create-income/', create_income, name="create-income"),
     path('create-expence/', create_expence, name="create-expence"),

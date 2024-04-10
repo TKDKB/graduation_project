@@ -16,6 +16,8 @@ import os
 def home_page_view(request: WSGIRequest):
     balance_changes = BalanceChange.objects.filter(user=request.user.id).select_related("user").prefetch_related("category")
     categories = Category.objects.filter(user=request.user)
+    for balance_change in balance_changes:
+        balance_change.sum = balance_change.sum / 100
     context: dict = {
         "balance_changes": balance_changes,
         "categories": categories,
@@ -29,9 +31,11 @@ def create_income(request: WSGIRequest):
     if request.method == 'POST':
         form = IncomeForm(request.user, request.POST)
         if form.is_valid():
+            sum = int(form.cleaned_data['sum'] * 100)
             income = form.save(commit=False)
             income.type = "I"
             income.user = request.user
+            income.sum = sum
             income.save()
             request.user.active_balance += income.sum
             request.user.save()
@@ -49,9 +53,11 @@ def create_expence(request: WSGIRequest):
     if request.method == 'POST':
         form = ExpenceForm(request.user, request.POST)
         if form.is_valid():
+            sum = int(form.cleaned_data['sum'] * 100)
             expence = form.save(commit=False)
             expence.type = "E"
             expence.user = request.user
+            expence.sum = sum
             expence.save()
             request.user.active_balance -= expence.sum
             request.user.save()
@@ -77,7 +83,17 @@ def delete_category(request: WSGIRequest, id: int):
 
 @login_required
 def delete_balance_change(request: WSGIRequest, id: int):
-    BalanceChange.objects.filter(id=id).delete()
+    balance_change = get_object_or_404(BalanceChange, id=id)
+    user = request.user
+
+    if balance_change.type == 'I':
+        user.active_balance -= balance_change.sum
+    elif balance_change.type == 'E':
+        user.active_balance += balance_change.sum
+
+    user.save()
+
+    balance_change.delete()
     return HttpResponseRedirect(reverse('home-page'))
 
 

@@ -237,7 +237,7 @@
                     <div class="col-10 mx-auto">
                         <h5 class="mb-3">Username: {{ request.user.username }}</h5>
                         <h5 class="mb-3">Email: {{ request.user.email }}</h5>
-                        <h5 class="mb-3">Active Balance: ${{ request.user.active_balance }}</h5>
+                        <h5 class="mb-3">Active Balance: ${{ active_balance }}</h5>
 
                         <div class="d-grid gap-2 mb-3 col-6 mx-auto">
                             <a href="{% url 'alter-active-balance' %}" class="btn btn-outline-success custom-button" type="button">Alter Active Balance</a>

@@ -48,7 +48,7 @@ class RegisterForm(forms.Form):
 """ Form for user edition """
 
 class ActiveBalanceForm(forms.Form):
-    amount = forms.IntegerField(label='Новое значение')
+    sum = forms.DecimalField(max_digits=10, decimal_places=2)
 
     def clean_amount(self):
         amount = self.cleaned_data['amount']

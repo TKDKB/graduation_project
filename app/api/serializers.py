@@ -13,10 +13,12 @@ class IncomeCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BalanceChange
-        fields = ['id', 'sum', 'category', 'user', 'date', 'description']
-        read_only_fields = ['id', 'user', 'date']
+        fields = ['id', 'sum', 'category', 'user', 'date', 'description', 'type']
+        read_only_fields = ['id', 'user', 'date', 'type']
 
     def create(self, validated_data):
+        validated_data['type'] = "I"
+
         validated_data['sum'] = int(validated_data['sum'] * 100)
         return super().create(validated_data)
 
@@ -30,10 +32,11 @@ class ExpenseCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BalanceChange
-        fields = ['id', 'sum', 'category', 'user', 'date', 'description']
-        read_only_fields = ['id', 'user', 'date']
+        fields = ['id', 'sum', 'category', 'user', 'date', 'description', 'type']
+        read_only_fields = ['id', 'user', 'date', 'type']
 
     def create(self, validated_data):
+        validated_data['type'] = "E"
         validated_data['sum'] = int(validated_data['sum'] * 100)
         return super().create(validated_data)
 

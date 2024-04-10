@@ -8,6 +8,6 @@ app_name = "api"
 
 urlpatterns = [
     path('', BalanceChangeListAPIView.as_view(), name="balance-changes"),
-    path('create/income/', IncomeListCreateAPIView.as_view(), name="create-income"),
-    path('create/expense/', ExpenseListCreateAPIView.as_view(), name="create-expense"),
+    path('income/', IncomeListCreateAPIView.as_view(), name="create-income"),
+    path('expense/', ExpenseListCreateAPIView.as_view(), name="create-expense"),
 ]

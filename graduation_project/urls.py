@@ -17,6 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from app.views import home_page_view, create_income, create_expence, create_category, create_regular_income, filter_balance_changes, test, export, delete_balance_change, delete_category, delete_regular_income
+from rest_framework_simplejwt.views import (
+    TokenRefreshView,
+    TokenVerifyView,
+    TokenObtainPairView
+)
 
 
 urlpatterns = [
@@ -24,6 +29,9 @@ urlpatterns = [
     path('accounts/', include("users.urls")),
     path('api/balance_changes/', include("app.api.urls")),
     path('api/accounts/', include("users.api.urls")),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('home/', home_page_view, name="home-page"),
     path('create-income/', create_income, name="create-income"),
     path('create-expence/', create_expence, name="create-expence"),

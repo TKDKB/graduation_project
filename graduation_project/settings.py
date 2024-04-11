@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+import os
 from datetime import timedelta
 from pathlib import Path
 
@@ -94,6 +95,32 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'graduation_project.wsgi.application'
+
+# CACHE
+
+REDIS_CACHE = os.environ.get("REDIS_CACHE_URL")
+KEY_PREFIX = "test_django_food_" if DEBUG else "django_food_"
+
+if REDIS_CACHE:
+    CACHES = {
+        "default": {
+            "BACKEND": "django_prometheus.cache.backends.redis.RedisCache",
+            "LOCATION": REDIS_CACHE,
+            "KEY_PREFIX": KEY_PREFIX,
+        }
+    }
+else:
+    CACHES = {
+        "default": {
+            "BACKEND": "django_prometheus.cache.backends.locmem.LocMemCache",
+            "KEY_PREFIX": KEY_PREFIX,
+            "OPTIONS": {
+                "MAX_ENTRIES": 10,
+                "CULL_FREQUENCY": 2,  # 1/2
+            },
+        }
+    }
+
 
 
 # Database

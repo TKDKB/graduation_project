@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from django.shortcuts import render, get_object_or_404
 from django.core.handlers.wsgi import WSGIRequest
 from django.http import HttpResponseRedirect
@@ -12,9 +14,15 @@ from django.http import FileResponse, HttpResponse
 import os
 
 
+
+def greeting(request:WSGIRequest):
+    return render(request, 'greeting.html')
+
 @login_required
 def home_page_view(request: WSGIRequest):
-    balance_changes = BalanceChange.objects.filter(user=request.user.id).select_related("user").prefetch_related("category")
+    end_date = datetime.now()
+    start_date = end_date - timedelta(days=30)
+    balance_changes = BalanceChange.objects.filter(user=request.user.id, date__range=[start_date, end_date]).select_related("user").prefetch_related("category")
     categories = Category.objects.filter(user=request.user)
     for balance_change in balance_changes:
         balance_change.sum = balance_change.sum / 100
@@ -170,9 +178,20 @@ def filter_balance_changes(request):
     if selected_category:
         balance_changes = balance_changes.filter(category=selected_category)
 
-    return render(request, 'home.html',
-                  {'balance_changes': balance_changes, 'selected_type': selected_type,
-                   'selected_category': selected_category, "categories": categories})
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+
+    if start_date and end_date:
+        start_date = datetime.strptime(start_date, '%Y-%m-%d')
+        end_date = datetime.strptime(end_date, '%Y-%m-%d')
+        balance_changes = balance_changes.filter(date__range=[start_date, end_date])
+
+    return render(request, 'home.html', {'balance_changes': balance_changes,
+                                         'selected_type': selected_type,
+                                         'selected_category': selected_category,
+                                         'categories': categories,
+                                         'start_date': start_date,
+                                         'end_date': end_date})
 
 
 @login_required

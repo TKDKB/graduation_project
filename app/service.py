@@ -1,4 +1,7 @@
 import json
+
+from django.core.exceptions import ObjectDoesNotExist
+
 from .models import BalanceChange, Category
 from .forms import IncomeForm, ExpenceForm, CategoryForm, RegularIncomeForm
 import pandas as pd
@@ -12,7 +15,9 @@ from django.core.handlers.wsgi import WSGIRequest
 
 
 def get_statistics_for_graph(request: WSGIRequest):
-    balance_changes = BalanceChange.objects.filter(user=request.user).select_related("user").prefetch_related(
+    end_date = datetime.now()
+    start_date = end_date - timedelta(days=30)
+    balance_changes = BalanceChange.objects.filter(user=request.user, date__range=[start_date, end_date]).select_related("user").prefetch_related(
         "category")
     categories = Category.objects.filter(user=request.user)
 
@@ -117,13 +122,23 @@ def create_dataframe_for_excel_export(request: WSGIRequest):
 
 
 def create_regular_income_celery(request: WSGIRequest, name:str, sum: int, recharge_day: int):
-    crontab = CrontabSchedule.objects.create(
-        minute='0',
-        hour='0',
-        day_of_week=1,
-        day_of_month=recharge_day,
-        month_of_year='*'
-    )
+    try:
+        crontab = CrontabSchedule.objects.get(
+            day_of_month=recharge_day,
+            minute='0',
+            hour='0',
+            day_of_week=1,
+            month_of_year='*'
+        )
+    except ObjectDoesNotExist:
+        crontab = CrontabSchedule.objects.create(
+            minute='0',
+            hour='0',
+            day_of_week=1,
+            day_of_month=recharge_day,
+            month_of_year='*'
+        )
+
     task_name = f"user_{request.user.id}_income_{sum}_name_{name}"
     task_args = f"[{request.user.id}, {sum}]"
 
@@ -132,7 +147,7 @@ def create_regular_income_celery(request: WSGIRequest, name:str, sum: int, recha
         task="tasks.regular_balance_update",
         args=task_args,
         queue="income",
-        crontab_id=crontab.id,
+        crontab=crontab
     )
 
     request.user.periodic_tasks.add(p_task)

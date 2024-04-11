@@ -80,7 +80,7 @@
         <a class="navbar-brand text-light" href="{% url 'home-page' %}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-droplet" viewBox="0 0 16 16">
   <path fill-rule="evenodd" d="M7.21.8C7.69.295 8 0 8 0q.164.544.371 1.038c.812 1.946 2.073 3.35 3.197 4.6C12.878 7.096 14 8.345 14 10a6 6 0 0 1-12 0C2 6.668 5.58 2.517 7.21.8m.413 1.021A31 31 0 0 0 5.794 3.99c-.726.95-1.436 2.008-1.96 3.07C3.304 8.133 3 9.138 3 10a5 5 0 0 0 10 0c0-1.201-.796-2.157-2.181-3.7l-.03-.032C9.75 5.11 8.5 3.72 7.623 1.82z"/>
   <path fill-rule="evenodd" d="M4.553 7.776c.82-1.641 1.717-2.753 2.093-3.13l.708.708c-.29.29-1.128 1.311-1.907 2.87z"/>
-</svg>FIN</a>
+</svg>PHIN</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -111,7 +111,7 @@
     </nav>
 
 
-    <h1 class="text-center mb-4">FIN</h1>
+    <h1 class="text-center mb-4">PHIN</h1>
     <hr class="custom">
 {#   <div class="container ml-4 mr-4">#}
 {#        <div style="text-align: right; margin: 10px;">#}
@@ -141,6 +141,14 @@
                                     <option value="{{ category.id }}" {% if category.id == selected_category %} selected {% endif %}>{{ category.name }}</option>
                                 {% endfor %}
                             </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="start_date">Start Date:</label>
+                            <input type="date" id="startDatePicker" name="start_date" class="form-control" value="{% if start_date %}{{ start_date|date:'Y-m-d' }}{% endif %}">
+                        </div>
+                        <div class="form-group">
+                            <label for="end_date">End Date:</label>
+                            <input type="date" id="endDatePicker" name="end_date" class="form-control" value="{% if end_date %}{{ end_date|date:'Y-m-d' }}{% endif %}">
                         </div>
                         <button id="applyFiltersButton" type="button" class="btn custom-button">Apply Filters</button>
                     </form>
@@ -199,6 +207,38 @@
                             window.history.pushState({path: newUrl}, '', newUrl);
                         });
                     </script>
+                    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        // Активация выбора категории после выбора типа
+        $('#typeSelect').change(function() {
+            if ($(this).val() !== '') {
+                $('#categorySelect').prop('disabled', false);
+            } else {
+                $('#categorySelect').val('');
+                $('#categorySelect').prop('disabled', true);
+            }
+        });
+
+        // Обработка нажатия на кнопку применить фильтры
+        $('#applyFiltersButton').click(function() {
+            $('#filterForm').submit();
+        });
+
+        // Инициализация календаря
+        $(function() {
+            $('#startDatePicker').datepicker({
+                format: 'yyyy-mm-dd',
+                autoclose: true
+            });
+            $('#endDatePicker').datepicker({
+                format: 'yyyy-mm-dd',
+                autoclose: true
+            });
+        });
+    });
+</script>
            </div>
 {#       </div>#}
 

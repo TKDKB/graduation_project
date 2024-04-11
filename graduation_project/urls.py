@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include("users.urls")),
     path('api/balance_changes/', include("app.api.urls")),
+    path('api/accounts/', include("users.api.urls")),
     path('home/', home_page_view, name="home-page"),
     path('create-income/', create_income, name="create-income"),
     path('create-expence/', create_expence, name="create-expence"),

@@ -29,6 +29,8 @@ class IncomeForm(forms.ModelForm):
 
 
 class ExpenceForm(forms.ModelForm):
+    sum = forms.DecimalField(max_digits=10, decimal_places=2)
+
     class Meta:
         model = BalanceChange
         fields = ['sum', 'category', 'description']

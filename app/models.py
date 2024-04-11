@@ -63,11 +63,11 @@ class RegularBalanceChange(models.Model):
 
 
 
-class Reports(models.Model):
-    class Meta:
-        db_table = 'reports'
-
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    context = models.TextField(verbose_name="Содержание")
-    time_period_start = models.DateTimeField(verbose_name="Начало промежутка времени")
-    time_period_end = models.DateTimeField(verbose_name="Конец промежутка времени")
+# class Reports(models.Model):
+#     class Meta:
+#         db_table = 'reports'
+#
+#     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+#     context = models.TextField(verbose_name="Содержание")
+#     time_period_start = models.DateTimeField(verbose_name="Начало промежутка времени")
+#     time_period_end = models.DateTimeField(verbose_name="Конец промежутка времени")

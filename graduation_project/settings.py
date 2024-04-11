@@ -23,12 +23,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure--r!^ag6!7p%fmmsd+uex812veb&rjvyid$m9btf!9tte7y)jj+'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure--r!^ag6!7p%fmmsd+uex812veb&rjvyid$m9btf!9tte7y)jj+')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DJANGO_DEBUG', '0') == '1'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
+
+INTERNAL_IPS = [
+    # ...
+    "127.0.0.1",
+    # ...
+]
 
 
 # Default user model
@@ -53,6 +59,11 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
 ]
 
+if DEBUG:
+    INSTALLED_APPS += [
+        "debug_toolbar",
+    ]
+
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
@@ -65,6 +76,11 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+if DEBUG:
+    MIDDLEWARE += [
+        "debug_toolbar.middleware.DebugToolbarMiddleware",
+    ]
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 
@@ -99,7 +115,7 @@ WSGI_APPLICATION = 'graduation_project.wsgi.application'
 # CACHE
 
 REDIS_CACHE = os.environ.get("REDIS_CACHE_URL")
-KEY_PREFIX = "test_django_food_" if DEBUG else "django_food_"
+KEY_PREFIX = "test_django_graduation_project_" if DEBUG else "django_graduation_project_"
 
 if REDIS_CACHE:
     CACHES = {
@@ -126,23 +142,27 @@ else:
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': "accounting",
-#         "USER": "slava_dev",
-#         "PASSWORD": "12345678",
-#         "HOST": "127.0.0.1",  # IP адрес или домен СУБД.
-#         "PORT": 5432,
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get("DATABASE NAME"),
+        # "PHIN",
+        "USER": os.environ.get("DATABASE USER"),
+            # "slava_final",
+        "PASSWORD": os.environ.get("DATABASE PASSWORD"),
+            # "12345678",
+        "HOST": os.environ.get("DATABASE HOST"),
+            # "127.0.0.1",  # IP адрес или домен СУБД.
+        "PORT": 5432,
+    }
+}
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -186,15 +206,26 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
-EMAIL_HOST_USER = 'bulanovichvyacheslav@gmail.com'
-DEFAULT_FROM_EMAIL = 'bulanovichvyacheslav@gmail.com'
-EMAIL_HOST_PASSWORD = 'pmoj neps lspa kxxd'
+EMAIL_HOST_USER = os.environ.get("EMAIL HOST USER", "")
+    # 'bulanovichvyacheslav@gmail.com'
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT FROM EMAIL", "")
+    # 'bulanovichvyacheslav@gmail.com'
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL HOST PASSWORD", "")
+    # 'pmoj neps lspa kxxd'
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+if os.environ.get("COLLECT_STATIC"):
+    STATIC_ROOT = BASE_DIR / 'static'
+
+else:
+    STATICFILES_DIRS = [
+        BASE_DIR / 'static'
+    ]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

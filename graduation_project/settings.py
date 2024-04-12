@@ -120,7 +120,7 @@ KEY_PREFIX = "test_django_graduation_project_" if DEBUG else "django_graduation_
 if REDIS_CACHE:
     CACHES = {
         "default": {
-            "BACKEND": "django_prometheus.cache.backends.redis.RedisCache",
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
             "LOCATION": REDIS_CACHE,
             "KEY_PREFIX": KEY_PREFIX,
         }
@@ -128,7 +128,7 @@ if REDIS_CACHE:
 else:
     CACHES = {
         "default": {
-            "BACKEND": "django_prometheus.cache.backends.locmem.LocMemCache",
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
             "KEY_PREFIX": KEY_PREFIX,
             "OPTIONS": {
                 "MAX_ENTRIES": 10,

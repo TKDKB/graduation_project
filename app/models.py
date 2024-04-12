@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 
 """
-Модели категорий, изменений баланса, групповых аккаунтов и отчётов
+Модели категорий и изменений баланса 
 """
 
 
@@ -60,14 +60,3 @@ class RegularBalanceChange(models.Model):
         expence = ('E', 'Expence')
 
     type = models.CharField(max_length=1, choices=Type.choices, verbose_name="Тип изменения баланса")
-
-
-
-# class Reports(models.Model):
-#     class Meta:
-#         db_table = 'reports'
-#
-#     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-#     context = models.TextField(verbose_name="Содержание")
-#     time_period_start = models.DateTimeField(verbose_name="Начало промежутка времени")
-#     time_period_end = models.DateTimeField(verbose_name="Конец промежутка времени")

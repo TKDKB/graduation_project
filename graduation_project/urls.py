@@ -26,13 +26,23 @@ from rest_framework_simplejwt.views import (
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    # Роутер для API приложения пользователей
     path('api/accounts/', include("users.api.urls")),
+
+    # Роутер для приложения пользователей
     path('accounts/', include("users.urls")),
+
+    # Роутер для API приложения изменений баланса
     path('api/balance_changes/', include("app.api.urls")),
 
+    # JWT
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+
+
+    #
     path('', greeting, name="greeting"),
     path('home/', home_page_view, name="home-page"),
     path('create-income/', create_income, name="create-income"),

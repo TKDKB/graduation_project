@@ -90,7 +90,7 @@ ROOT_URLCONF = 'graduation_project.urls'
 
 # DEFAULT REDIRECT URLS
 LOGIN_REDIRECT_URL = "profile"
-LOGOUT_REDIRECT_URL = "register"
+LOGOUT_REDIRECT_URL = "login"
 
 
 TEMPLATES = [

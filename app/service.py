@@ -11,10 +11,13 @@ import os
 from django_celery_beat.models import PeriodicTask, CrontabSchedule
 from django.core.handlers.wsgi import WSGIRequest
 
-# from .forms import RegularBalanceChange
 
 
 def get_statistics_for_graph(request: WSGIRequest):
+    """
+    Функция для формирования данных для отображения страницы пользователя, в частности, для графика анализа доходов и расходов
+    :param request:
+    """
     end_date = datetime.now()
     start_date = end_date - timedelta(days=30)
     balance_changes = BalanceChange.objects.filter(user=request.user, date__range=[start_date, end_date]).select_related("user").prefetch_related(
@@ -23,8 +26,7 @@ def get_statistics_for_graph(request: WSGIRequest):
 
     balance_changes_list = list(balance_changes.values())
     categories_list = list(categories.values())
-    # print(balance_changes_list)
-    # print(categories_list)
+
 
     final_income_statistics_dict = {}
     final_expense_statistics_dict = {}
@@ -67,18 +69,22 @@ def get_statistics_for_graph(request: WSGIRequest):
         if expense > 0:
             expense_non_zero = True
 
-    income_labels = json.dumps(income_labels_list)  # Преобразование списка Python в JSON-строку
-    income_values = json.dumps(income_values_list)  # Преобразование списка Python в JSON-строку
+    income_labels = json.dumps(income_labels_list)
+    income_values = json.dumps(income_values_list)
     print(income_values)
 
-    expense_labels = json.dumps(expense_labels_list)  # Преобразование списка Python в JSON-строку
-    expense_values = json.dumps(expence_values_list)  # Преобразование списка Python в JSON-строку
+    expense_labels = json.dumps(expense_labels_list)
+    expense_values = json.dumps(expence_values_list)
     income_non_zero = json.dumps(income_non_zero)
     expense_non_zero = json.dumps(expense_non_zero)
     return income_labels, income_values, expense_labels, expense_values, income_non_zero, expense_non_zero
 
 
 def create_dataframe_for_excel_export(request: WSGIRequest):
+    """
+    Функция для формирования файла для экспорта
+    :param request:
+    """
     data = {}
     end_date = datetime.now()
     start_date = end_date - timedelta(days=30)
@@ -90,38 +96,16 @@ def create_dataframe_for_excel_export(request: WSGIRequest):
     df = pd.DataFrame(data)
     df['date'] = df['date'].dt.tz_localize(None)
     df.to_excel('data.xlsx', index=False)
-    # with pd.ExcelWriter('data.xlsx', engine='xlsxwriter') as writer:
-    #     # Записываем DataFrame в файл Excel
-    #     df.to_excel(writer, index=False, sheet_name='Sheet1')
-    #
-    #     # Получаем объект workbook
-    #     workbook = writer.book
-    #     worksheet = writer.sheets['Sheet1']
-    #
-    #     # Создаем формат для даты и применяем его к столбцу с датами
-    #     date_format = workbook.add_format({'num_format': 'yyyy-mm-dd hh:mm:ss'})
-    #     worksheet.set_column('C:C', None, date_format)
-
-
-# def download_and_delete_file(request: WSGIRequest):
-#     create_dataframe_for_excel_export(request)
-#     file_path = 'data.xlsx'
-#     file_name = os.path.basename(file_path)
-#
-#     try:
-#         with open(file_path, 'rb') as file:
-#             response = HttpResponse(file, content_type='application/vnd.ms-excel')
-#             response['Content-Disposition'] = 'attachment; filename=' + file_name
-#
-#             # Удаляем файл после отправки
-#             os.remove(file_path)
-#
-#             return response
-#     except FileNotFoundError:
-#         return HttpResponse("Файл не найден", status=404)
 
 
 def create_regular_income_celery(request: WSGIRequest, name:str, sum: int, recharge_day: int):
+    """
+    Функция для создания регулярного дохода
+    :param request:
+    :param name:
+    :param sum:
+    :param recharge_day:
+    """
     try:
         crontab = CrontabSchedule.objects.get(
             day_of_month=recharge_day,

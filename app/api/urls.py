@@ -2,7 +2,7 @@ from django.urls import path
 
 from app.api.views import BalanceChangeListAPIView, IncomeListCreateAPIView, ExpenseListCreateAPIView, CategoryListCreateAPIView, PeriodicTaskListCreateAPIView, BalanceChangeDeleteAPIView, RegularIncomeDeleteAPIView, CategoryDeleteAPIView
 
-"""Router for API"""
+"""Роутер для API изменений баланса"""
 
 app_name = "api"
 

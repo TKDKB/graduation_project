@@ -3,9 +3,10 @@ from django import forms
 from users.models import User
 
 
-""" Registration form """
+
 
 class RegisterForm(forms.Form):
+    """ Форма регистрации """
     username = forms.CharField(min_length=3, max_length=150)
     email = forms.EmailField(max_length=256)
     password1 = forms.CharField(widget=forms.PasswordInput, label="Пароль")
@@ -45,9 +46,9 @@ class RegisterForm(forms.Form):
         }
 
 
-""" Form for user edition """
 
 class ActiveBalanceForm(forms.Form):
+    """ Форма обновления активного баланса """
     sum = forms.DecimalField(max_digits=10, decimal_places=2)
 
     def clean_amount(self):
@@ -58,9 +59,10 @@ class ActiveBalanceForm(forms.Form):
 
 
 
-""" Password reset form """
+
 
 class PasswordResetForm(forms.Form):
+    """ Форма смены пароля """
     password1 = forms.CharField(widget=forms.PasswordInput, label="Пароль")
     password2 = forms.CharField(widget=forms.PasswordInput, label="Повторите пароль")
 

@@ -8,8 +8,9 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 
 
-""" Базовый класс отправщика писем """
+
 class BasicEmailSender:
+    """ Базовый класс отправщика писем """
     template_name = None
     id_field = "pk"
     subject = None
@@ -59,18 +60,20 @@ class BasicEmailSender:
         mail.send()
 
 
-""" Отправщик писем для подтверждения регистрации """
+
 
 class PasswordResetEmailSender(BasicEmailSender):
+    """ Отправщик писем для подтверждения регистрации """
     template_name = "registration/password-reset.html"
     subject = "Password Reset"
     id_field = "id"
 
 
 
-""" Отправщий писем для смены пароля """
+
 
 class RegistrationConfirmEmailSender(BasicEmailSender):
+    """ Отправщий писем для смены пароля """
     template_name = "registration/email-confirm.html"
     subject = "Confirm Registration"
     id_field = "id"

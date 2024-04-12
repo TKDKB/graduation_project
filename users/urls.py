@@ -3,6 +3,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 
 from .views import register_view, show_user, send_email_password_change, change_password_receiver, confirm_registration_receiver, alter_active_balance
 
+"""Роутер для приложения пользователя"""
 urlpatterns = [
     path("register/", register_view, name="register"),
     path("login/", LoginView.as_view(), name="login"),

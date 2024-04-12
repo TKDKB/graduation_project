@@ -13,9 +13,11 @@ from .serializers import BalanceChangesSerializer, IncomeSerializer, ExpenseSeri
 
 
 class BalanceChangeListAPIView(generics.ListAPIView):
+    """
+    Класс представления для отображения списка изменений баланса
+    """
 
     def get_queryset(self):
-        # return BalanceChange.objects.filter(user=self.request.user)
         queryset = BalanceChange.objects.filter(user=self.request.user)
 
         change_type = self.request.query_params.get('change_type')
@@ -37,6 +39,9 @@ class BalanceChangeListAPIView(generics.ListAPIView):
 
 
 class BalanceChangeDeleteAPIView(generics.DestroyAPIView):
+    """
+    Класс представления для удаления изменений баланса
+    """
     queryset = BalanceChange.objects.all()
     serializer_class = BalanceChangesSerializer
     permission_classes = [IsAuthenticated]
@@ -46,7 +51,9 @@ class BalanceChangeDeleteAPIView(generics.DestroyAPIView):
 
 
 class ExpenseListCreateAPIView(generics.ListCreateAPIView):
-    # queryset = BalanceChange.objects.filter(type='E')  # Фильтруем только расходы
+    """
+    Класс представления для отображения списка расходов и создания объектов изменений баланса типа расход
+    """
     def get_queryset(self):
         return BalanceChange.objects.filter(type='E', user=self.request.user)
 
@@ -58,7 +65,9 @@ class ExpenseListCreateAPIView(generics.ListCreateAPIView):
 
 
 class IncomeListCreateAPIView(generics.ListCreateAPIView):
-    # queryset = BalanceChange.objects.filter(type='I')  # Фильтруем только доходы
+    """
+    Класс представления для отображения списка доходов и создания объектов изменений баланса типа доход
+    """
 
     def get_queryset(self):
         return BalanceChange.objects.filter(type='I', user=self.request.user)
@@ -70,6 +79,9 @@ class IncomeListCreateAPIView(generics.ListCreateAPIView):
 
 
 class CategoryListCreateAPIView(generics.ListCreateAPIView):
+    """
+    Класс представления для отображения списка категорий и создания объектов категорий
+    """
 
     serializer_class = CategorySerializer
     permission_classes = [IsAuthenticated]
@@ -98,6 +110,9 @@ class CategoryListCreateAPIView(generics.ListCreateAPIView):
 
 
 class CategoryDeleteAPIView(generics.DestroyAPIView):
+    """
+    Класс представления для удаления объектов категорий
+    """
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [IsAuthenticated]
@@ -116,6 +131,9 @@ class CategoryDeleteAPIView(generics.DestroyAPIView):
 
 
 class PeriodicTaskListCreateAPIView(generics.ListCreateAPIView):
+    """
+    Класс представления для отображения списка периодических доходов и создания объектов периодических доходов
+    """
     def get_queryset(self):
         return PeriodicTask.objects.filter(user=self.request.user)
 
@@ -135,6 +153,9 @@ class PeriodicTaskListCreateAPIView(generics.ListCreateAPIView):
 
 
 class RegularIncomeDeleteAPIView(generics.DestroyAPIView):
+    """
+    Класс представления для удаления периодических доходов
+    """
     queryset = PeriodicTask.objects.all()
     serializer_class = PeriodicTaskSerializer
     permission_classes = [IsAuthenticated]

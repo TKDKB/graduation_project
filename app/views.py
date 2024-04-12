@@ -16,10 +16,18 @@ import os
 
 
 def greeting(request:WSGIRequest):
+    """
+    Функция отображения приветственной обложки
+    :param request:
+    """
     return render(request, 'greeting.html')
 
 @login_required
 def home_page_view(request: WSGIRequest):
+    """
+    Функция отображения домашней страницы
+    :param request:
+    """
     end_date = datetime.now()
     start_date = end_date - timedelta(days=30)
     balance_changes = BalanceChange.objects.filter(user=request.user.id, date__range=[start_date, end_date]).select_related("user").prefetch_related("category")
@@ -36,6 +44,10 @@ def home_page_view(request: WSGIRequest):
 
 @login_required
 def create_income(request: WSGIRequest):
+    """
+    Функция создания дохода
+    :param request:
+    """
     if request.method == 'POST':
         form = IncomeForm(request.user, request.POST)
         if form.is_valid():
@@ -47,7 +59,6 @@ def create_income(request: WSGIRequest):
             income.save()
             request.user.active_balance += income.sum
             request.user.save()
-            # return render(request, 'create-income-form.html', {'form': form})  # Перенаправление на страницу об успешном создании объекта
             return HttpResponseRedirect(reverse('home-page'))
 
     else:
@@ -58,6 +69,10 @@ def create_income(request: WSGIRequest):
 
 @login_required
 def create_expence(request: WSGIRequest):
+    """
+    Функция создания расхода
+    :param request:
+    """
     if request.method == 'POST':
         form = ExpenceForm(request.user, request.POST)
         if form.is_valid():
@@ -70,7 +85,6 @@ def create_expence(request: WSGIRequest):
             request.user.active_balance -= expence.sum
             request.user.save()
             return HttpResponseRedirect(reverse('home-page'))
-            # return render(request, 'create-expense-form.html', {'form': form})  # Перенаправление на страницу об успешном создании объекта
     else:
         form = ExpenceForm(request.user)
 
@@ -79,6 +93,11 @@ def create_expence(request: WSGIRequest):
 
 @login_required
 def delete_category(request: WSGIRequest, id: int):
+    """
+    Функция удаления категории
+    :param request:
+    :param id:
+    """
     category = get_object_or_404(Category, id=id)
     user = request.user
 
@@ -91,6 +110,11 @@ def delete_category(request: WSGIRequest, id: int):
 
 @login_required
 def delete_balance_change(request: WSGIRequest, id: int):
+    """
+    Функция удаления изменения баланса
+    :param request:
+    :param id:
+    """
     balance_change = get_object_or_404(BalanceChange, id=id)
     user = request.user
 
@@ -104,25 +128,12 @@ def delete_balance_change(request: WSGIRequest, id: int):
     balance_change.delete()
     return HttpResponseRedirect(reverse('home-page'))
 
-
-# @login_required
-# def create_category(request: WSGIRequest):
-#     if request.method == 'POST':
-#         form = CategoryForm(request.POST)
-#         if form.is_valid():
-#             category = form.save(commit=False)
-#             category.is_private = True
-#             category.save()
-#             category.user.set([request.user])
-#             return render(request, 'temporary_message.html')
-#     else:
-#         form = CategoryForm()
-#
-#     return render(request, 'create_category_form.html', {'form': form})
-
-
 @login_required
 def create_category(request: WSGIRequest):
+    """
+    Функция создания категории
+    :param request:
+    """
     if request.method == 'POST':
         form = CategoryForm(request.POST)
         if form.is_valid():
@@ -146,26 +157,12 @@ def create_category(request: WSGIRequest):
 
     return render(request, 'create-category-form.html', {'form': form})
 
-
-# # TODO: тут есть вопросы по реализации
-# @login_required
-# def create_regular_income(request: WSGIRequest):
-#     if request.method == 'POST':
-#         form = RegularIncomeForm(request.POST)
-#         if form.is_valid():
-#             r_income = form.save(commit=False)
-#             r_income.type = "E"
-#             r_income.user = request.user
-#             r_income.save()
-#             return render(request, 'temporary_message.html')
-#     else:
-#         form = RegularIncomeForm()
-#
-#     return render(request, 'create_income_form.html', {'form': form})
-
-
 @login_required
 def filter_balance_changes(request):
+    """
+    Функция фильтрации изменений баланса
+    :param request:
+    """
     selected_type = request.GET.get('type')
     selected_category = request.GET.get('category')
 
@@ -201,6 +198,10 @@ def test(request: WSGIRequest):
 
 @login_required
 def export(request: WSGIRequest):
+    """
+    Функция экспорта в excel
+    :param request:
+    """
     create_dataframe_for_excel_export(request)
     file_path = 'data.xlsx'
     file_name = os.path.basename(file_path)
@@ -218,26 +219,13 @@ def export(request: WSGIRequest):
         return HttpResponse("Файл не найден", status=404)
 
 
-# @login_required
-# def create_regular_income(request: WSGIRequest):
-#     if request.method == 'POST':
-#         form = RegularIncomeForm(request.POST)
-#         if form.is_valid():
-#             name = form.cleaned_data['name']
-#             sum = int(form.cleaned_data['replenishment_amount'] * 100)
-#             recharge_day = form.cleaned_data['recharge_day']
-#             create_regular_income_celery(request, name, sum, recharge_day)
-#             return HttpResponseRedirect(reverse('home-page'))
-#         else:
-#             errors = form.errors
-#             print(errors)
-#     else:
-#         form = RegularIncomeForm(request.user)
-#
-#     return render(request, 'create-regular-income-form.html', {'form': form})
 
 @login_required
 def create_regular_income(request: WSGIRequest):
+    """
+    Функция создания регулярного дохода
+    :param request:
+    """
     if request.method == 'POST':
         form = RegularIncomeForm(request.user, request.POST)
         if form.is_valid():
@@ -253,10 +241,11 @@ def create_regular_income(request: WSGIRequest):
 
 @login_required
 def delete_regular_income(request: WSGIRequest, id: int):
+    """
+    Функция удаления регулярного дохода
+    :param request:
+    :param id:
+    """
     PeriodicTask.objects.filter(id=id).delete()
     return HttpResponseRedirect(reverse('profile'))
 
-
-# @login_required
-# def delete_regular_income(request: WSGIRequest, id: int):
-#

@@ -4,12 +4,18 @@ from app.models import BalanceChange, Category
 
 
 class BalanceChangesSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор для отображения списка изменений баланса
+    """
     class Meta:
         model = BalanceChange
         fields = ['id', 'sum', 'category', 'user', 'date', 'description', 'type']
 
 
 class IncomeSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор для отображения списка доходов и создания объектов изменения баланса типа доход
+    """
     sum = serializers.DecimalField(max_digits=10, decimal_places=2)
 
     class Meta:
@@ -29,6 +35,9 @@ class IncomeSerializer(serializers.ModelSerializer):
 
 
 class ExpenseSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор для отображения списка расходов и создания объектов изменения баланса типа расход
+    """
     sum = serializers.DecimalField(max_digits=10, decimal_places=2)
 
     class Meta:
@@ -47,6 +56,9 @@ class ExpenseSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    """
+    Сериализатор для отображения списка категорий и создания объектов категорий
+    """
     class Meta:
         model = Category
         fields = ['id', 'name', 'is_private', 'type', 'user']
@@ -54,12 +66,18 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class CrontabScheduleSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор для получения поля day_of_month из модели CrontabSchedule
+    """
     class Meta:
         model = CrontabSchedule
-        fields = ['day_of_month']  # Используйте кортеж для указания поля
+        fields = ['day_of_month']
 
 
 class PeriodicTaskSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор для отображения списка периодических доходов и создания объектов периодического дохода
+    """
     crontab = CrontabScheduleSerializer(read_only=True)
     amount = serializers.DecimalField(write_only=True, max_digits=10, decimal_places=2)
     day_of_month = serializers.IntegerField(min_value=1, max_value=31, write_only=True)

@@ -17,9 +17,13 @@ from django.contrib.auth import update_session_auth_hash
 from app.service import get_statistics_for_graph
 
 
-""" Регистрация """
+
 
 def register_view(request: WSGIRequest):
+    """
+    Регистрация
+    :param request:
+    """
     form = RegisterForm()
 
     if request.method == 'POST':
@@ -40,10 +44,13 @@ def register_view(request: WSGIRequest):
     return render(request, 'registration/register.html', {'form': form})
 
 
-""" Открыть профиль пользователя """
 
 @login_required
 def show_user(request: WSGIRequest):
+    """
+    Профиль пользователя
+    :param request:
+    """
     user = get_object_or_404(User, username=request.user.username)
     categories = Category.objects.filter(user=user)
     regular_incomes = PeriodicTask.objects.filter(user=user)
@@ -70,51 +77,25 @@ def show_user(request: WSGIRequest):
             )
 
 
-""" Изменить пользователя """
-
-# @login_required
-# def edit_user(request: WSGIRequest):
-#     user = get_object_or_404(User, username=request.user.username)
-#     # if request.user != user:
-#     #     return HttpResponseForbidden("У вас нет доступа к аккаунту этого пользователя!")
-#     if request.method == 'GET':
-#         form = UserProfileForm()
-#         context = {
-#             "form": form,
-#             "user": request.user,
-#         }
-#
-#         return render(request, "user_profile.html", context)
-#
-#     elif request.method == "POST":
-#
-#         form = UserProfileForm(request.POST)
-#         if form.is_valid():
-#
-#             if form.cleaned_data['first_name']:
-#                 request.user.first_name = form.cleaned_data['first_name']
-#
-#             if form.cleaned_data['last_name']:
-#                 request.user.last_name = form.cleaned_data['last_name']
-#
-#             request.user.save()
-#
-#             return HttpResponseRedirect(reverse('show-profile', args=[request.user.username]))
-#
-#         return render(request, 'user_profile.html', {'form': form})
-
-
-""" Отправить письмо для смены пароля """
 
 @login_required
 def send_email_password_change(request: WSGIRequest):
+    """
+    Отправка письма для смены пароля
+    :param request:
+    """
     PasswordResetEmailSender(request, request.user).send_mail()
 
     return render(request, "registration/message.html")
 
 
-""" Обработчик перехода по ссылке из письма для смены пароля """
 def change_password_receiver(request: WSGIRequest, token: str, uidb: str):
+    """
+    Обработчик перехода по ссылке для смены пароля
+    :param request:
+    :param token:
+    :param uidb:
+    """
     user_id = force_str(urlsafe_base64_decode(uidb))
     user = get_object_or_404(User, id=user_id)
     if default_token_generator.check_token(user, token):
@@ -131,8 +112,13 @@ def change_password_receiver(request: WSGIRequest, token: str, uidb: str):
     return render(request, "registration/invalid-password-reset.html")
 
 
-""" Обработчик перехода по ссылке из письма для подтверждения регистрации """
 def confirm_registration_receiver(request: WSGIRequest, token: str, uidb: str):
+    """
+    Обработчик подтверждения регистрации
+    :param request:
+    :param token:
+    :param uidb:
+    """
     user_id = force_str(urlsafe_base64_decode(uidb))
     user = get_object_or_404(User, id=user_id)
     if default_token_generator.check_token(user, token):
@@ -145,6 +131,10 @@ def confirm_registration_receiver(request: WSGIRequest, token: str, uidb: str):
 
 @login_required
 def alter_active_balance(request: WSGIRequest):
+    """
+    Изменение активного баланса
+    :param request:
+    """
     if request.method == 'POST':
         form = ActiveBalanceForm(request.POST)
 

@@ -4,8 +4,10 @@ from django.core.validators import MinValueValidator
 from .models import BalanceChange, Category
 from django_celery_beat.models import PeriodicTask
 
-# TODO: Сделать нормальное поле для выбора периодичности в регулярном доходе
 class IncomeForm(forms.ModelForm):
+    """
+    Форма для создания дохода
+    """
     sum = forms.DecimalField(max_digits=10, decimal_places=2)
 
     class Meta:
@@ -29,6 +31,9 @@ class IncomeForm(forms.ModelForm):
 
 
 class ExpenceForm(forms.ModelForm):
+    """
+    Форма для создания расхода
+    """
     sum = forms.DecimalField(max_digits=10, decimal_places=2)
 
     class Meta:
@@ -36,7 +41,6 @@ class ExpenceForm(forms.ModelForm):
         fields = ['sum', 'category', 'description']
         labels = {
             'sum': 'Сумма',
-            # 'necessity': 'Необходимость траты',
             'category': 'Категория',
             'description': 'Описание',
         }
@@ -47,12 +51,15 @@ class ExpenceForm(forms.ModelForm):
 
     def __init__(self, user, *args, **kwargs):
         super(ExpenceForm, self).__init__(*args, **kwargs)
-        self.fields['category'].required = False  # Поле категории не обязательно
+        self.fields['category'].required = False
         self.fields['category'].queryset = Category.objects.filter(type='E', user=user)
         self.fields['sum'].validators.append(MinValueValidator(limit_value=0))
 
 
 class CategoryForm(forms.ModelForm):
+    """
+    Форма для создания категории
+    """
     class Meta:
         model = Category
         fields = ['name', 'type']
@@ -62,23 +69,10 @@ class CategoryForm(forms.ModelForm):
         }
 
 
-# class RegularIncomeForm(forms.ModelForm):
-#     class Meta:
-#         model = RegularBalanceChange
-#         fields = ['sum', 'category', 'description', 'regularity']
-#         labels = {
-#             'sum': 'Сумма',
-#             'category': 'Категория',
-#             'description': 'Описание',
-#             'regularity': 'Регулярность',
-#         }
-#
-#         widgets = {
-#             'category': forms.Select(attrs={'class': 'form-control'}),
-#         }
-
-
 class RegularIncomeForm(forms.Form):
+    """
+    Форма для создания регулярного дохода
+    """
     name = forms.CharField(label="Название", max_length=255)
 
     replenishment_amount = forms.DecimalField(label='Сумма пополнения', max_digits=10, decimal_places=2,
@@ -92,11 +86,10 @@ class RegularIncomeForm(forms.Form):
         print("aaa")
         cleaned_data = super().clean()
         name = cleaned_data.get("name")
-        sum = int(cleaned_data.get("replenishment_amount")) * 100  # Исправлено на sum
+        sum = int(cleaned_data.get("replenishment_amount")) * 100
 
         task_name = f"user_{self.user.id}_income_{sum}_name_{name}"
 
-        # Проверка наличия записи с аналогичными данными в базе данных
         existing_records = PeriodicTask.objects.filter(
             name=task_name,
             args=f"[{self.user.id}, {sum}]"

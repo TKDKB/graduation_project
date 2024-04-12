@@ -152,22 +152,22 @@ else:
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get("DATABASE NAME"),
+        'NAME': os.environ.get("DATABASE_NAME"),
         # "PHIN",
-        "USER": os.environ.get("DATABASE USER"),
+        "USER": os.environ.get("DATABASE_USER"),
             # "slava_final",
-        "PASSWORD": os.environ.get("DATABASE PASSWORD"),
+        "PASSWORD": os.environ.get("DATABASE_PASSWORD"),
             # "12345678",
-        "HOST": os.environ.get("DATABASE HOST"),
+        "HOST": os.environ.get("DATABASE_HOST"),
             # "127.0.0.1",  # IP адрес или домен СУБД.
         "PORT": 5432,
     }
 }
 
-print(os.environ.get("DATABASE NAME"))
-print(os.environ.get("DATABASE USER"))
-print(os.environ.get("DATABASE PASSWORD"))
-print(os.environ.get("DATABASE HOST"))
+print(os.environ.get("DATABASE_NAME"))
+print(os.environ.get("DATABASE_USER"))
+print(os.environ.get("DATABASE_PASSWORD"))
+print(os.environ.get("DATABASE_HOST"))
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -211,11 +211,11 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
-EMAIL_HOST_USER = os.environ.get("EMAIL HOST USER", "")
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
     # 'bulanovichvyacheslav@gmail.com'
-DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT FROM EMAIL", "")
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "")
     # 'bulanovichvyacheslav@gmail.com'
-EMAIL_HOST_PASSWORD = os.environ.get("EMAIL HOST PASSWORD", "")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
     # 'pmoj neps lspa kxxd'
 
 

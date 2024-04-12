@@ -105,7 +105,7 @@
     <div class="container">
         <h1 class="text-center mt-4">Login</h1>
         <hr class="custom">
-
+        <a href="{% url 'register' %}" class="text-center mt-4"> Нет аккаунта? Зарегистрируйтесь </a>
         <div class="row justify-content-center">
             <a class="col-6">
                 <form method="post" class="mt-3">
@@ -113,7 +113,7 @@
                     {{ form|crispy }}
                     <button type="submit" class="btn custom-button">Confirm</button>
                 </form>
-                <a href="{% url 'register' %}"> Нет аккаунта? Зарегистрируйтесь </a>
+
             </a>
             </div>
         </div>

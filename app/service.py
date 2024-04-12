@@ -100,7 +100,7 @@ def create_dataframe_for_excel_export(request: WSGIRequest):
 
 def create_regular_income_celery(request: WSGIRequest, name:str, sum: int, recharge_day: int):
     """
-    Функция для создания регулярного дохода
+    Функция для создания регулярного доходаd
     :param request:
     :param name:
     :param sum:

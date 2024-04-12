@@ -164,6 +164,11 @@ DATABASES = {
     }
 }
 
+print(os.environ.get("DATABASE NAME"))
+print(os.environ.get("DATABASE USER"))
+print(os.environ.get("DATABASE PASSWORD"))
+print(os.environ.get("DATABASE HOST"))
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         "rest_framework_simplejwt.authentication.JWTAuthentication",

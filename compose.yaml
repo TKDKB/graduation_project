@@ -31,14 +31,13 @@ services:
 #    }
   postgres:
     image: postgres:14.0
-    container_name: postgres_container_grad
     environment:
       POSTGRES_DB: PHIN
       POSTGRES_USER: slava_final
       POSTGRES_PASSWORD: 12345678
 
-    ports:
-      - "5432:5432"
+    volumes:
+      - "./pg_data:/var/lib/postgresql/data"
 
 
   pgadmin:

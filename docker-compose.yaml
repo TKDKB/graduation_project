@@ -4,7 +4,7 @@ services:
   backend:
     image: django_grad:v1
     container_name: django_container
-    command: ./run.sh
+    command: python manage.py runserver 0.0.0.0:8000
     restart: always
     environment:
       DJANGO_SUPERUSER_EMAIL: admin@example.com
@@ -32,7 +32,7 @@ services:
   postgres:
     image: postgres:14.0
     environment:
-      POSTGRES_DB: PHIN
+      POSTGRES_DB: phin
       POSTGRES_USER: slava_final
       POSTGRES_PASSWORD: 12345678
 
